@@ -1,0 +1,34 @@
+@media only screen and (min-width : 1024px){
+    /* This means that the styles will automatically resize so that there are 3 cards on one (this is the default for most laptops) */
+    /* Sometimes, the screen is small enough to display 2 cards on one column, in that case there is no media query as anything below the width (1024px) will automatically apply the default styles */
+    /* its a bunch of yap i know */
+   
+      .theme {
+        height: 260px;
+        margin-top: 215px;
+        width: 675px;
+        position: absolute; /* This makes the theme window positioned relative to its closest positioned ancestor */
+        top: 50%; /* Center the window vertically */
+        left: 50%; /* Center the window horizontally */
+        transform: translate(-50%, -50%); /* Adjusts the position to the center */
+      }
+ 
+
+    
+
+}
+.collapsed {
+  height: 0;
+  margin-top: 0;
+}
+#cloakCard{
+  transition: all 0.2s ease-out
+}
+#themeCard{
+  transition: all 0.2s ease-out
+}
+#generalCard{
+  transition: all 0.2s ease-out
+}
+
+
