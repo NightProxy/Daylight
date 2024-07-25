@@ -14,7 +14,7 @@ import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import { bareModulePath } from "@mercuryworkshop/bare-as-module3"
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import wisp from "wisp-server-node";
-
+import net from "node:net"
 let updateInProgress = false;
 let updateCompleted = false;
 let rebuildInProgress = false;
