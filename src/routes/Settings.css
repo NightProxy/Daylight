@@ -4,22 +4,43 @@
     /* its a bunch of yap i know */
    
       .theme {
-        height: 260px;
-        margin-top: 215px;
-        width: 675px;
-        position: absolute; /* This makes the theme window positioned relative to its closest positioned ancestor */
-        top: 50%; /* Center the window vertically */
-        left: 50%; /* Center the window horizontally */
-        transform: translate(-50%, -50%); /* Adjusts the position to the center */
+        display: none;
+        
+      }
+      #themeCard1024{
+        display: block;
+        height: 400px;
+      }
+      #generalCard {
+        height: 300px;
+        margin-top: auto;
+        width: 310%;
+    
+      }
+      #cloakCard{
+        height: 400px;
+      }
+      #searchCard{
+        height: 400px;
       }
  
 
     
 
 }
+@media only screen and (max-width : 1023px){
+  #themeCard1024{
+    display: none;
+    height: 400px;
+  }
+}
+
 .collapsed {
   height: 0;
   margin-top: 0;
+}
+#searchCard{
+  transition: all 0.2s ease-out
 }
 #cloakCard{
   transition: all 0.2s ease-out

@@ -1,7 +1,6 @@
 /* eslint-disable no-non-null-assertion */
 
 import { useRef, useState, useEffect } from "react";
-import viteLogo from "/trace.svg";
 import "./Settings.css";
 import { Button } from "@/components/ui/button";
 import "../app/globals.css";
@@ -10,7 +9,7 @@ import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Progress } from "@/components/ui/progress-5s";
 import { Separator } from "@/components/ui/separator";
-import { inject } from '@vercel/analytics';
+
 import React from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Input } from "@/components/ui/input"
@@ -44,36 +43,53 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion-custom"
 import { Combobox } from "@/components/ui/combobox"
+ 
+import {
+    ToggleGroup,
+    ToggleGroupItem,
+  } from "@/components/ui/toggle-group"
+  import { SiCanvas } from "react-icons/si";
+
 function login() {
-    
-    
+    const [accordionDelay, setAccordionDelay] = useState(0)
+    const proxyChange = (value: string) => {
+        console.log("gyatt", value)
+        //add handling 
+      }
+      const searchChange = (value: string) => {
+        console.log("gyatt", value)
+        //add handling 
+      }
+      const transportChange = (value: string) => {
+        //add bareMux transport switching
+      }
     const [isOpen, setIsOpen] = React.useState(false)
     const transportList = [
         {
-          value: "epoxy",
-          label: "Epoxy",
+            value: "epoxy",
+            label: "Epoxy",
         },
         {
-          value: "libcurl",
-          label: "Libcurl",
+            value: "libcurl",
+            label: "Libcurl",
         },
         {
-          value: "bare",
-          label: "Original Bare client",
+            value: "bare",
+            label: "Original Bare client",
         }
-      ];
-      const searchList = [
+    ];
+    const searchList = [
         {
-          value: "google",
-          label: "Google (Default)",
+            value: "google",
+            label: "Google (Default)",
         },
         {
-          value: "bing",
-          label: "Bing",
+            value: "bing",
+            label: "Bing",
         },
         {
-          value: "ecosia",
-          label: "Ecosia",
+            value: "ecosia",
+            label: "Ecosia",
         },
         {
             value: "ddg",
@@ -83,19 +99,19 @@ function login() {
             value: "brave",
             label: "Brave"
         }
-      ];
-      const proxyList = [
+    ];
+    const proxyList = [
         {
-          value: "ultraviolet",
-          label: "Ultraviolet (Default)",
+            value: "ultraviolet",
+            label: "Ultraviolet (Default)",
         },
         {
-          value: "rammerhead",
-          label: "Rammerhead",
+            value: "rammerhead",
+            label: "Rammerhead",
         },
         {
-          value: "dynamic",
-          label: "Dynamic",
+            value: "dynamic",
+            label: "Dynamic",
         },
         {
             value: "scramjet",
@@ -105,7 +121,7 @@ function login() {
             value: "meteor",
             label: "Meteor (experimental)"
         }
-      ];
+    ];
     var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
     const osInstance = OverlayScrollbars(document.body, {
         scrollbars: {
@@ -295,6 +311,10 @@ function login() {
             });
 
         });
+        function responsive(){
+
+        }
+        setInterval(responsive, 10)
         $("#favorites").on("click", function () {
 
             var elements = {
@@ -337,35 +357,94 @@ function login() {
 
 
         });
-        $("#accTrigger").on("click", function() {
-            
+
+        $("#accTrigger").on("click", function () {
+
             var isClosed = $("#accTrigger").attr("data-state") === "closed";
 
             console.log("AHAHAHAH")
-            if (isClosed){
-                document.getElementById("cloakCard")!.style.height = "300px"
-                document.getElementById("themeCard")!.style.marginTop = "-275px"
-                document.getElementById("themeCard")!.style.height = "260px"
-                setTimeout(function(){
+            if (window.innerWidth >= 1024) {
+                if (isClosed) {
+                    document.getElementById("generalCard")!.style.transition = "margin-top 0.2s ease-out"
+                    document.getElementById("themeCard")!.style.height = ""
+                    document.getElementById("cloakCard")!.style.height = ""
+                    document.getElementById("generalCard")!.style.marginTop = "157.5px"
+                    document.getElementById("generalCard")!.style.transition = "all 0.2s ease-out"
+                    document.getElementById("searchCard")!.style.height = "715px"
+
+
                     document.getElementById("generalCard")!.style.width = "205%"
-                }, 200)
-                
+                    document.getElementById("generalCard")!.style.marginLeft = "105%"
+                    
+                    setTimeout(function(){
+                        document.getElementById('generalCard')!.style.marginTop = "0"
+                    }, 200)
+                        setTimeout(function(){
+                            document.getElementById("generalCard")!.style.marginTop = "-315px"
+                            document.getElementById("generalCard")!.style.transition = "all 0.2s ease-out"
+                        }, 200)
+                    
+                    
+                    
+
+
+
+
+
+
+
+
+                } else {
+                    setTimeout(function () {
+
+                        document.getElementById('generalCard')!.style.marginTop = "0"
+                        setTimeout(function () {
+                            document.getElementById('generalCard')!.style.marginTop = ""
+                            document.getElementById("generalCard")!.style.width = "310%"
+                            document.getElementById("generalCard")!.style.marginLeft = "auto"
+                            document.getElementById("searchCard")!.style.height = "400px"
+
+
+
+
+
+                            document.getElementById("themeCard")!.style.height = ""
+                            document.getElementById("cloakCard")!.style.height = ""
+                        }, 200)
+
+                    }, 200)
+
+
+
+                }
             } else {
+                console.log(window.innerWidth)
+                if (isClosed) {
+                    document.getElementById("cloakCard")!.style.height = "300px"
+                    document.getElementById("themeCard")!.style.marginTop = "-275px"
+                    document.getElementById("themeCard")!.style.height = "260px"
+                    setTimeout(function () {
+                        document.getElementById("generalCard")!.style.width = "205%"
+                    }, 200)
+
+                } else {
                     document.getElementById("generalCard")!.style.width = "100%"
-                    
-                        document.getElementById("cloakCard")!.style.height = "100%"
+
+                    document.getElementById("cloakCard")!.style.height = "100%"
                     document.getElementById("themeCard")!.style.marginTop = "0"
-                document.getElementById("themeCard")!.style.height = "100%"
-                   
-                    
-                
+                    document.getElementById("themeCard")!.style.height = "100%"
+
+
+
+                }
             }
 
-            
+
+
         });
 
     }, [])
- 
+
     return (
         <>
 
@@ -418,7 +497,7 @@ function login() {
                 <div className="w-full max-w-6xl mx-auto p-4 md:p-6 lg:p-8 text-left">
                     <h1 className="text-3xl font-bold mb-6" style={{ width: "145px", background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(50px)", borderRadius: "999px", paddingRight: "10px", paddingLeft: "10px" }}>Settings</h1>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <Card className="h-full" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }}>
+                        <Card id="searchCard" className="h-full" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }}>
                             <CardHeader>
                                 <CardTitle>Search</CardTitle>
                                 <CardDescription>Manage how you surf with Daylight</CardDescription>
@@ -427,12 +506,12 @@ function login() {
                                 <div className="space-y-2">
                                     <Label htmlFor="name">Proxy</Label>
                                     <br></br>
-                                    <Combobox placeHolder="proxy" triggerID="proxyTrigger" list={proxyList} placeHolderPlural="proxies" defaultValue="ultraviolet" />
+                                    <Combobox onValueChange={proxyChange} placeHolder="proxy" triggerID="proxyTrigger" list={proxyList} placeHolderPlural="proxies" defaultValue="ultraviolet" />
                                 </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Search Engine</Label>
                                     <br></br>
-                                    <Combobox placeHolder="search engine" triggerID="searchTrigger" list={searchList} placeHolderPlural="search engines" defaultValue="google" />
+                                    <Combobox onValueChange={searchChange} placeHolder="search engine" triggerID="searchTrigger" list={searchList} placeHolderPlural="search engines" defaultValue="google" />
                                 </div>
                                 { /* 
                                 The below code is advanced for most users, so they will be hidden under a  "Advanced" submenu. The following settings
@@ -457,7 +536,7 @@ function login() {
                                             <div className="space-y-2">
                                                 <Label htmlFor="email">Transport</Label>
                                                 <CardDescription>Do not change this setting unless you know what you are doing.</CardDescription>
-                                                <Combobox triggerID="transportTrigger" placeHolder="transport" list={transportList} defaultValue="epoxy" placeHolderPlural="transports" />
+                                                <Combobox onValueChange={transportChange} triggerID="transportTrigger" placeHolder="transport" list={transportList} defaultValue="libcurl" placeHolderPlural="transports" />
                                             </div>
 
                                         </AccordionContent>
@@ -470,7 +549,7 @@ function login() {
                                 <Button>Save Changes</Button>
                             </CardFooter>
                         </Card>
-                        <Card id="cloakCard" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)", height: "100%"}}>
+                        <Card id="cloakCard" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }}>
                             <CardHeader>
                                 <CardTitle>Cloaks</CardTitle>
                                 <CardDescription>Manage your tab cloaks</CardDescription>
@@ -479,9 +558,21 @@ function login() {
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <CardDescription>Unfortunately, due to lack of time, about:blank cloaks are not available yet.</CardDescription>
-                                       
+
                                     </div>
-                                    <Switch id="email-notifications" defaultChecked />
+                                    <ToggleGroup variant="outline" type="single">
+      <ToggleGroupItem value="google" aria-label="Toggle Google cloak">
+      <i className="fa-brands fa-google"></i>
+      </ToggleGroupItem>
+      <ToggleGroupItem value="schoology" aria-label="Toggle Schoology cloak">
+        <i className="fa-regular fa-circle-s"></i>
+      </ToggleGroupItem>
+      <ToggleGroupItem value="canvas" aria-label="Toggle Canvas cloak">
+      <SiCanvas  size={20}/>
+
+      </ToggleGroupItem>
+    </ToggleGroup>
+
                                 </div>
                                 <div className="flex items-center justify-between">
                                     <div>
@@ -493,6 +584,25 @@ function login() {
                             </CardContent>
                             <CardFooter>
                                 <Button>Save Preferences</Button>
+                            </CardFooter>
+                        </Card>
+                        <Card id="themeCard1024" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }} >
+                            <CardHeader>
+                                <CardTitle>Themes</CardTitle>
+                                <CardDescription>Customize how Daylight looks. Each theme has a Dark and Light variant customizable from the widget on the top right.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="font-medium">Two-Factor Authentication</p>
+                                        <p className="text-muted-foreground text-sm">Add an extra layer of security to your account</p>
+                                    </div>
+                                    <Switch id="two-factor-auth" />
+                                </div>
+
+                            </CardContent>
+                            <CardFooter>
+                                <Button>Update Security</Button>
                             </CardFooter>
                         </Card>
                         <Card id="generalCard" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }} className="">
@@ -537,7 +647,7 @@ function login() {
                                     </div>
                                     <Switch id="two-factor-auth" />
                                 </div>
-                                
+
                             </CardContent>
                             <CardFooter>
                                 <Button>Update Security</Button>

@@ -424,6 +424,36 @@ function Home() {
           </div>
         </div>
       </div>
+      <Dialog >
+      <DialogTrigger asChild>
+        <Button variant="outline" style={{right: "10px", position: "fixed", bottom: "10px"}}>Why the lack of time?</Button>
+      </DialogTrigger>
+      <DialogContent style={{zIndex: "100000000", marginTop: "-10px", width: "750px"}} className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Why the lack of time?</DialogTitle>
+          <DialogDescription>
+            Why do I mention frequently that I lack time to add features?
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+         
+            <Label htmlFor="name" className="text-left">
+              Why do I mention frequently that I have no time?
+            </Label>
+            <p className="text-muted-foreground ">Well, it's because I started this project late (7/12/2024). You might think that's a ton of time, or you might think what was I doing before that. I was working on what originally was supposed to be my Proxathon entry, however due to some issues, I scrapped the project. This project may come out as a service soon, I don't know. I started the Horizon project back in June, and I spent a lot of time on it, which is why I have (in my book) so little time to complete this. Since I planned on having Tabs as well, I started priortizing certain features (specifically Tabs, because the way I want is complex) which is why some small but important features may not be there.</p>
+           
+     
+          
+      
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+          <Button type="submit">Okay (Close)</Button>
+          </DialogClose>
+          
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
 
     </ThemeProvider>
       <motion.div

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,44 +16,24 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-/*const list = [
-  /{
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
-*/
+export function Combobox({ list, placeHolderPlural, placeHolder, defaultValue, triggerID = "", onValueChange }) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
 
-export function Combobox({list, placeHolderPlural, placeHolder, defaultValue, triggerID = ""}) {
-    const [open, setOpen] = React.useState(false);
-    const [value, setValue] = React.useState("")
-    React.useEffect(() => {
-        setValue(defaultValue);
-      }, [defaultValue]);
-    function e(){
-      //pass
+  React.useEffect(() => {
+    setValue(defaultValue);
+  }, [defaultValue]);
+
+  const handleSelect = (currentValue) => {
+    const newValue = currentValue === value ? "" : currentValue;
+    setValue(newValue);
+    setOpen(false);
+    if (onValueChange) {
+      onValueChange(newValue);
     }
-
-
+  };
 
   return (
-
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
@@ -63,11 +42,10 @@ export function Combobox({list, placeHolderPlural, placeHolder, defaultValue, tr
           aria-expanded={open}
           className="transition-all justify-between"
           id={triggerID}
-      
         >
           {value
             ? list.find((entry) => entry.value === value)?.label
-            :`Select ${placeHolder}...`}
+            : `Select ${placeHolder}...`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -81,10 +59,7 @@ export function Combobox({list, placeHolderPlural, placeHolder, defaultValue, tr
                 <CommandItem
                   key={entry.value}
                   value={entry.value}
-                  onSelect={(currentValue) => {
-                    setValue(currentValue === value ? "" : currentValue);
-                    setOpen(false);
-                  }}
+                  onSelect={handleSelect}
                 >
                   <Check
                     className={cn(
@@ -97,7 +72,7 @@ export function Combobox({list, placeHolderPlural, placeHolder, defaultValue, tr
               ))}
             </CommandGroup>
           </CommandList>
-        </Command> 
+        </Command>
       </PopoverContent>
     </Popover>
   );
