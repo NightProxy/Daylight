@@ -34,7 +34,18 @@
     height: 400px;
   }
 }
-
+#cloakTitle{
+  transition: all 0.2s ease;
+}
+#cloakDescription{
+  transition: all 0.2s ease;
+}
+#saveCloak{
+  transition: opacity 0.2s ease;
+}
+#customCloakTitleInput{
+  transition: all 0.2s ease;
+}
 .collapsed {
   height: 0;
   margin-top: 0;

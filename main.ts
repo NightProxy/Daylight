@@ -7,14 +7,20 @@ import { select, Separator } from '@inquirer/prompts';
 import { exit } from "process";
 import createRammerhead from "rammerhead/src/server/index.js";
 import express from "express";
+import { fileURLToPath } from "url"
 import http from "node:http";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
+import { epoxyPath } from "./node_modules/@mercuryworkshop/epoxy-transport/lib/index";
+//the normal library does not have type definitions, so we're using a fork (mine)
+//i wasn't able to just use @mercuryworkshop/epoxy-transport because for some reason it wasn't looking in the node modules, but was looking through npm or something
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
-import { bareModulePath } from "@mercuryworkshop/bare-as-module3"
+import { bareModulePath } from "./node_modules/@mercuryworkshop/bare-as-module3/lib/index"
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
+import { meteorPath } from "meteorproxy"
 import wisp from "wisp-server-node";
 import net from "node:net"
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 let updateInProgress = false;
 let updateCompleted = false;
 let rebuildInProgress = false;
@@ -231,9 +237,19 @@ function startServer() {
     
 
     app.use("/uv/", express.static(uvPath));
-    console.log(chalk.red("Serving Ultraviolet files.."));
+    console.log(chalk.red("Serving Ultraviolet's files.."));
     app.use("/epoxy", express.static(epoxyPath));
+    console.log(chalk.yellow("Serving Epoxy's files.."));
+    app.use("/baremod/", express.static(bareModulePath))
+    console.log(chalk.green("Serving Bare's (as module) files.."));
+    app.use("/libcurl/", express.static(libcurlPath))
+    console.log(chalk.blue("Serving Libcurl's files.."));
     app.use("/baremux/", express.static(baremuxPath));
+    console.log(chalk.red("Serving Baremux's files.."));
+    app.use("/meteor/", express.static(meteorPath))
+    console.log(chalk.blue("Serving Meteor's files.."));
     app.use(express.static(path.join(__dirname, "dist")));
+    console.log(chalk.green("Serving", chalk.yellow("Daylight's"), chalk.green("files")));
+    console.log(chalk.green("All necessary files served. Setting up server."))
     
 }

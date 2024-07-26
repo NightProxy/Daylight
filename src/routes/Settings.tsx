@@ -43,26 +43,61 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion-custom"
 import { Combobox } from "@/components/ui/combobox"
- 
+
 import {
     ToggleGroup,
     ToggleGroupItem,
-  } from "@/components/ui/toggle-group"
-  import { SiCanvas } from "react-icons/si";
+} from "@/components/ui/toggle-group"
+import { SiCanvas, SiGoogleclassroom, SiGoogledocs, SiGoogleslides } from "react-icons/si";
+import { TbWorld } from "react-icons/tb";
+import Schoology from "@/components/Icons"
 
 function login() {
+    var gen = document.getElementById("generalCard")
+    var themec = document.getElementById("themeCard")
+    var cloc = document.getElementById("cloakCard")
+    var sea = document.getElementById("searchCard")
+    function check() {
+        if (sea!.style.height == "400px") {
+            gen!.style.transition = "margin-top 0.2s ease-out"
+            themec!.style.height = ""
+            cloc!.style.height = ""
+            gen!.style.marginTop = "157.5px"
+            gen!.style.transition = "all 0.2s ease-out"
+            sea!.style.height = "715px"
+
+
+            gen!.style.width = "205%"
+            gen!.style.marginLeft = "105%"
+
+            setTimeout(function () {
+                document.getElementById('generalCard')!.style.marginTop = "0"
+                $("#accTrigger").removeAttr("disabled")
+
+            }, 200)
+            setTimeout(function () {
+                gen!.style.marginTop = "-315px"
+                gen!.style.transition = "all 0.2s ease-out"
+            }, 200)
+        }
+    }
+    setInterval(check, 100)
+    const capitalizefr = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
     const [accordionDelay, setAccordionDelay] = useState(0)
     const proxyChange = (value: string) => {
         console.log("gyatt", value)
         //add handling 
-      }
-      const searchChange = (value: string) => {
-        console.log("gyatt", value)
-        //add handling 
-      }
-      const transportChange = (value: string) => {
+        if (value == null || value == "" || value == " ") {
+            console.error('user has fumbled something!!!!! ')
+        }
+    }
+    const searchChange = (value: string) => {
+        console.log("User has changed their serach engine to: ", value)
+        localStorage.setItem("search", value)
+    }
+    const transportChange = (value: string) => {
         //add bareMux transport switching
-      }
+    }
     const [isOpen, setIsOpen] = React.useState(false)
     const transportList = [
         {
@@ -139,6 +174,21 @@ function login() {
         }
     }
     useEffect(() => {
+        if (!localStorage.getItem("search")) {
+            localStorage.setItem("search", "google")
+        }
+        if (!localStorage.getItem("proxy")) {
+            localStorage.setItem('proxy', "ultraviolet")
+        }
+        if (!localStorage.getItem("transport")) {
+            localStorage.setItem("transport", "libcurl")
+
+
+        }
+        if (localStorage.getItem("cloak")) {
+            $(`#${localStorage.getItem("cloak")}Cloak`).trigger("click")
+        }
+
         Array.from(document.getElementsByClassName('os-scrollbar') as HTMLCollectionOf<HTMLElement>).forEach(element => {
             element.style.transition = ''
             element.style.opacity = ""
@@ -311,7 +361,7 @@ function login() {
             });
 
         });
-        function responsive(){
+        function responsive() {
 
         }
         setInterval(responsive, 10)
@@ -359,33 +409,39 @@ function login() {
         });
 
         $("#accTrigger").on("click", function () {
-
+            var gen = document.getElementById("generalCard")
+            var themec = document.getElementById("themeCard")
+            var cloc = document.getElementById("cloakCard")
+            var sea = document.getElementById("searchCard")
             var isClosed = $("#accTrigger").attr("data-state") === "closed";
-
+            $("#accTrigger").attr("disabled", "true")
             console.log("AHAHAHAH")
             if (window.innerWidth >= 1024) {
                 if (isClosed) {
-                    document.getElementById("generalCard")!.style.transition = "margin-top 0.2s ease-out"
-                    document.getElementById("themeCard")!.style.height = ""
-                    document.getElementById("cloakCard")!.style.height = ""
-                    document.getElementById("generalCard")!.style.marginTop = "157.5px"
-                    document.getElementById("generalCard")!.style.transition = "all 0.2s ease-out"
-                    document.getElementById("searchCard")!.style.height = "715px"
+
+                    gen!.style.transition = "margin-top 0.2s ease-out"
+                    themec!.style.height = ""
+                    cloc!.style.height = ""
+                    gen!.style.marginTop = "157.5px"
+                    gen!.style.transition = "all 0.2s ease-out"
+                    sea!.style.height = "715px"
 
 
-                    document.getElementById("generalCard")!.style.width = "205%"
-                    document.getElementById("generalCard")!.style.marginLeft = "105%"
-                    
-                    setTimeout(function(){
+                    gen!.style.width = "205%"
+                    gen!.style.marginLeft = "105%"
+
+                    setTimeout(function () {
                         document.getElementById('generalCard')!.style.marginTop = "0"
+                        $("#accTrigger").removeAttr("disabled")
+
                     }, 200)
-                        setTimeout(function(){
-                            document.getElementById("generalCard")!.style.marginTop = "-315px"
-                            document.getElementById("generalCard")!.style.transition = "all 0.2s ease-out"
-                        }, 200)
-                    
-                    
-                    
+                    setTimeout(function () {
+                        gen!.style.marginTop = "-315px"
+                        gen!.style.transition = "all 0.2s ease-out"
+                    }, 200)
+
+
+
 
 
 
@@ -397,19 +453,22 @@ function login() {
                 } else {
                     setTimeout(function () {
 
+
+                        $("#accTrigger").removeAttr("disabled")
                         document.getElementById('generalCard')!.style.marginTop = "0"
                         setTimeout(function () {
                             document.getElementById('generalCard')!.style.marginTop = ""
-                            document.getElementById("generalCard")!.style.width = "310%"
-                            document.getElementById("generalCard")!.style.marginLeft = "auto"
+                            gen!.style.width = "310%"
+                            gen!.style.marginLeft = "auto"
                             document.getElementById("searchCard")!.style.height = "400px"
 
 
 
 
 
-                            document.getElementById("themeCard")!.style.height = ""
-                            document.getElementById("cloakCard")!.style.height = ""
+                            themec!.style.height = ""
+                            cloc!.style.height = ""
+
                         }, 200)
 
                     }, 200)
@@ -420,20 +479,36 @@ function login() {
             } else {
                 console.log(window.innerWidth)
                 if (isClosed) {
-                    document.getElementById("cloakCard")!.style.height = "300px"
-                    document.getElementById("themeCard")!.style.marginTop = "-275px"
-                    document.getElementById("themeCard")!.style.height = "260px"
+                    document.getElementById("cloakDescription")!.style.opacity = "0"
+                    document.getElementById("saveCloak")!.style.opacity = "0"
+                    document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+                    document.getElementById("cloakTitle")!.textContent = "Hide the Advanced \n menu to reveal \n the cloak settings."
+                    cloc!.style.height = "285px"
+                    themec!.style.marginTop = "-275px"
+                    themec!.style.height = "260px"
+                    document.getElementById("searchCard")!.style.height = "100%"
                     setTimeout(function () {
-                        document.getElementById("generalCard")!.style.width = "205%"
+                        gen!.style.width = "205%"
+                        $("#accTrigger").removeAttr("disabled")
                     }, 200)
 
                 } else {
-                    document.getElementById("generalCard")!.style.width = "100%"
+                    gen!.style.width = "100%"
 
-                    document.getElementById("cloakCard")!.style.height = "100%"
-                    document.getElementById("themeCard")!.style.marginTop = "0"
-                    document.getElementById("themeCard")!.style.height = "100%"
-
+                    cloc!.style.height = "100%"
+                    themec!.style.marginTop = "0"
+                    themec!.style.height = "100%"
+                    setTimeout(function () {
+                        $("#accTrigger").removeAttr("disabled")
+                        document.getElementById("cloakDescription")!.style.opacity = "1"
+                        document.getElementById("saveCloak")!.style.opacity = "1"
+                        document.getElementById("customCloakTitleInput")!.style.opacity = "1"
+                        if (localStorage.getItem("cloak") == "custom") {
+                            document.getElementById("cloakTitle")!.textContent = "Custom Cloak Active"
+                        } else {
+                            document.getElementById("cloakTitle")!.textContent = `${capitalizefr(localStorage.getItem("cloak") as string)} Cloak Active`
+                        }
+                    }, 200)
 
 
                 }
@@ -442,6 +517,283 @@ function login() {
 
 
         });
+        var ct = document.getElementById("cloakTitle")
+        var cd = document.getElementById("cloakDescription")
+        var saveC = document.getElementById("saveCloak")
+        $(window).on("resize", function () {
+            if (window.innerWidth >= 1024) {
+                document.getElementById('generalCard')!.style.marginTop = ""
+                gen!.style.width = "310%"
+                gen!.style.marginLeft = "auto"
+                document.getElementById("searchCard")!.style.height = "400px"
+
+
+
+
+
+                themec!.style.height = ""
+                cloc!.style.height = "100%"
+
+            } else {
+                cloc!.style.height = "300px"
+                themec!.style.marginTop = "-275px"
+                themec!.style.height = "260px"
+                gen!.style.width = "205%"
+                gen!.style.width = "100%"
+
+                cloc!.style.height = "100%"
+                themec!.style.marginTop = "0"
+                themec!.style.height = "100%"
+
+            }
+        })
+        $("#googleCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "google") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "google")
+            localStorage.setItem("cloakTab", "google")
+            setTimeout(function () {
+                document.getElementById("cloakTitle")!.textContent = "Google Cloak Active"
+                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google" website as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 2/5'
+                ct!.style.opacity = "1"
+                cd!.style.opacity = "1"
+            }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "google")
+            localStorage.setItem("cloakTab", "google")
+            setTimeout(function () {
+                document.getElementById("cloakTitle")!.textContent = "Google Cloak Active"
+                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google" website as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 2/5'
+                ct!.style.opacity = "1"
+                cd!.style.opacity = "1"
+            }, 200)
+            }
+            
+
+        })
+        $("#schoologyCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "schoology") {
+                    console.log("womp womp womp wopm")
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "schoology")
+                    localStorage.setItem("cloakTab", "schoology")
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "Schoology Cloak Active"
+                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Schoology" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, my opinion, if your school uses this service): 5/5 (Most schools have custom domains for Schoology). If your school does not use this service, your chances are: 2/5'
+                        ct!.style.opacity = "1"
+                        cd!.style.opacity = "1"
+                    }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "schoology")
+            localStorage.setItem("cloakTab", "schoology")
+            setTimeout(function () {
+                document.getElementById("cloakTitle")!.textContent = "Schoology Cloak Active"
+                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Schoology" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, my opinion, if your school uses this service): 5/5 (Most schools have custom domains for Schoology). If your school does not use this service, your chances are: 2/5'
+                ct!.style.opacity = "1"
+                cd!.style.opacity = "1"
+            }, 200)
+            }
+            
+
+
+        })
+        $("#canvasCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "canvas") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "canvas")
+            localStorage.setItem("cloakTab", "canvas")
+            setTimeout(function () {
+                document.getElementById("cloakTitle")!.textContent = "Canvas Cloak Active"
+                document.getElementById("cloakDescription")!.textContent = `You have selected the "Canvas" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion, if your school uses this service): 3/5 (The title set as the cloak may differ than Canvas' actual title)`
+                ct!.style.opacity = "1"
+                cd!.style.opacity = "1"
+            }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "canvas")
+            localStorage.setItem("cloakTab", "canvas")
+            setTimeout(function () {
+                document.getElementById("cloakTitle")!.textContent = "Canvas Cloak Active"
+                document.getElementById("cloakDescription")!.textContent = `You have selected the "Canvas" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion, if your school uses this service): 3/5 (The title set as the cloak may differ than Canvas' actual title)`
+                ct!.style.opacity = "1"
+                cd!.style.opacity = "1"
+            }, 200)
+            }
+            
+
+        })
+        $("#docsCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "docs") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "docs")
+                    localStorage.setItem("cloakTab", "docs")
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "Docs Cloak Active"
+                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Docs" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 4/5 (They would think your writing an essay)'
+                        ct!.style.opacity = "1"
+                        cd!.style.opacity = "1"
+                    }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "docs")
+                localStorage.setItem("cloakTab", "docs")
+                setTimeout(function () {
+                    document.getElementById("cloakTitle")!.textContent = "Docs Cloak Active"
+                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Docs" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 4/5 (They would think your writing an essay)'
+                    ct!.style.opacity = "1"
+                    cd!.style.opacity = "1"
+                }, 200)
+            }
+
+
+        })
+        $("#slidesCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "slides") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "slides")
+                    localStorage.setItem("cloakTab", "slides")
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "Slides Cloak Active"
+                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Slides" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 3/5'
+                        ct!.style.opacity = "1"
+                        cd!.style.opacity = "1"
+                    }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "slides")
+                localStorage.setItem("cloakTab", "slides")
+                setTimeout(function () {
+                    document.getElementById("cloakTitle")!.textContent = "Slides Cloak Active"
+                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Slides" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 3/5'
+                    ct!.style.opacity = "1"
+                    cd!.style.opacity = "1"
+                }, 200)
+            }
+
+
+        })
+        $("#classroomCloak").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "classroom") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "classroom")
+                    localStorage.setItem("cloakTab", "classroom")
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "Classroom Cloak Active"
+                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Classroom" service as your cloak. Chances of your proctor or admin not finding out (if your school uses Google Classrom): 4/5. If your school does not use Google Classroom, your chances are: 1/5. (They would be confused)'
+                        ct!.style.opacity = "1"
+                        cd!.style.opacity = "1"
+                    }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "classroom")
+                localStorage.setItem("cloakTab", "classroom")
+                setTimeout(function () {
+                    document.getElementById("cloakTitle")!.textContent = "Classroom Cloak Active"
+                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Classroom" service as your cloak. Chances of your proctor or admin not finding out (if your school uses Google Classrom): 4/5. If your school does not use Google Classroom, your chances are: 1/5. (They would be confused)'
+                    ct!.style.opacity = "1"
+                    cd!.style.opacity = "1"
+                }, 200)
+            }
+
+
+        })
+        $("#customCloakButton").on("click", function () {
+            ct!.style.opacity = "0"
+            cd!.style.opacity = "0"
+            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+            document.getElementById("saveCloak")!.style.opacity = "0"
+            if (localStorage.getItem("cloak")) {
+                if (localStorage.getItem("cloak") == "custom") {
+                    setTimeout(function () {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
+                    }, 200)
+                } else {
+                    localStorage.setItem("cloak", "custom")
+                    localStorage.setItem("cloakTab", "custom")
+                    setTimeout(function () {
+                        document.getElementById("customCloakTitleInput")!.style.opacity = "1"
+                        document.getElementById("saveCloak")!.style.opacity = "1"
+                        document.getElementById("cloakTitle")!.textContent = "Custom Cloaks"
+                        document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!"
+                        ct!.style.opacity = "1"
+                        cd!.style.opacity = "1"
+                    }, 200)
+                }
+            } else {
+                localStorage.setItem("cloak", "custom")
+                localStorage.setItem("cloakTab", "custom")
+                setTimeout(function () {
+                    document.getElementById("customCloakTitleInput")!.style.opacity = "1"
+                    document.getElementById("saveCloak")!.style.opacity = "1"
+                    document.getElementById("cloakTitle")!.textContent = "Custom Cloaks"
+                    document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!"
+                    ct!.style.opacity = "1"
+                    cd!.style.opacity = "1"
+                }, 200)
+            }
+
+
+
+        })
+
+
 
     }, [])
 
@@ -560,31 +912,47 @@ function login() {
                                         <CardDescription>Unfortunately, due to lack of time, about:blank cloaks are not available yet.</CardDescription>
 
                                     </div>
-                                    <ToggleGroup variant="outline" type="single">
-      <ToggleGroupItem value="google" aria-label="Toggle Google cloak">
-      <i className="fa-brands fa-google"></i>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="schoology" aria-label="Toggle Schoology cloak">
-        <i className="fa-regular fa-circle-s"></i>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="canvas" aria-label="Toggle Canvas cloak">
-      <SiCanvas  size={20}/>
-
-      </ToggleGroupItem>
-    </ToggleGroup>
-
                                 </div>
+
+                                <ToggleGroup variant="outline" type="single">
+                                    <ToggleGroupItem id="googleCloak" value="google" aria-label="Toggle Google cloak">
+                                        <i className="fa-brands fa-google"></i>
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="schoologyCloak" value="schoology" aria-label="Toggle Schoology cloak">
+                                        <Schoology />
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="canvasCloak" value="canvas" aria-label="Toggle Canvas cloak">
+                                        <SiCanvas size={20} />
+
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="docsCloak" value="docs" aria-label="Toggle Google Docs cloak">
+                                        <SiGoogledocs size={20} />
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="slidesCloak" value="slides" aria-label="Toggle Google Slides cloak">
+                                        <SiGoogleslides size={20} />
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="classroomCloak" value="classroom" aria-label="Toggle Google Classroom cloak">
+                                        <SiGoogleclassroom size={20} />
+                                    </ToggleGroupItem>
+                                    <ToggleGroupItem id="customCloakButton" value="custom" aria-label="Toggle Custom cloak">
+                                        <TbWorld size={20} />
+                                    </ToggleGroupItem>
+                                </ToggleGroup>
+
+
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="font-medium">Push Notifications</p>
-                                        <p className="text-muted-foreground text-sm">Receive push notifications on your devices</p>
+                                        <p id="cloakTitle" className="font-medium">Push Notifications</p>
+                                        <p id="cloakDescription" className="text-muted-foreground text-sm">Receive push notifications on your devices</p>
+                                        <Input id="customCloakTitleInput" className="" placeholder="Enter the title of the custom cloak..."></Input>
+                                        <br />
+                                        <Button id="saveCloak" className="">Save</Button>
                                     </div>
-                                    <Switch id="push-notifications" />
+
+
                                 </div>
                             </CardContent>
-                            <CardFooter>
-                                <Button>Save Preferences</Button>
-                            </CardFooter>
+
                         </Card>
                         <Card id="themeCard1024" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }} >
                             <CardHeader>
