@@ -58,10 +58,11 @@ function login() {
     var cloc = document.getElementById("cloakCard")
     var sea = document.getElementById("searchCard")
     function check() {
-        if (sea!.style.height == "400px") {
+        
+        if (document.getElementById("searchCard")!.style.height == "400px" && window.innerWidth >= 1024) {
             gen!.style.transition = "margin-top 0.2s ease-out"
             themec!.style.height = ""
-            cloc!.style.height = ""
+            document.getElementById("cloakCard")!.style.height = ""
             gen!.style.marginTop = "157.5px"
             gen!.style.transition = "all 0.2s ease-out"
             sea!.style.height = "715px"
@@ -277,7 +278,10 @@ function login() {
         document.body.style.backgroundRepeat = 'no-repeat';
         document.body.style.backgroundAttachment = 'fixed';
         document.body.style.height = '100%';
-        icon?.setAttribute("href", `/img/favicon_${themeClass}.png`);
+        if (!localStorage.getItem("cloak")){
+            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+        }
+        
     }
     useEffect(() => {
 
@@ -501,13 +505,23 @@ function login() {
                     setTimeout(function () {
                         $("#accTrigger").removeAttr("disabled")
                         document.getElementById("cloakDescription")!.style.opacity = "1"
-                        document.getElementById("saveCloak")!.style.opacity = "1"
+                        
+                        if (localStorage.getItem("cloak")){
+                            if (localStorage.getItem("cloak") == "custom") {
+                                document.getElementById("cloakTitle")!.textContent = "Custom Cloak Active"
+                                document.getElementById("saveCloak")!.style.opacity = "1"
                         document.getElementById("customCloakTitleInput")!.style.opacity = "1"
-                        if (localStorage.getItem("cloak") == "custom") {
-                            document.getElementById("cloakTitle")!.textContent = "Custom Cloak Active"
+                            } else {
+                                
+                                document.getElementById("cloakTitle")!.textContent = `${capitalizefr(localStorage.getItem("cloak") as string)} Cloak Active`
+                            }
                         } else {
-                            document.getElementById("cloakTitle")!.textContent = `${capitalizefr(localStorage.getItem("cloak") as string)} Cloak Active`
+                            ct!.textContent = "No cloak set."
+                            document.getElementById("saveCloak")!.style.opacity = "0"
+                        document.getElementById("customCloakTitleInput")!.style.opacity = "0"
                         }
+
+                        
                     }, 200)
 
 
@@ -521,277 +535,156 @@ function login() {
         var cd = document.getElementById("cloakDescription")
         var saveC = document.getElementById("saveCloak")
         $(window).on("resize", function () {
+            //responsive!!!
+            //well somewhat
+            //it also works on phones but not phones going to middle school (12 year old phones lmao)
             if (window.innerWidth >= 1024) {
                 document.getElementById('generalCard')!.style.marginTop = ""
-                gen!.style.width = "310%"
-                gen!.style.marginLeft = "auto"
-                document.getElementById("searchCard")!.style.height = "400px"
+                document.getElementById("generalCard")!.style.width = "310%"
+                document.getElementById("generalCard")!.style.marginLeft = "auto"
+                document.getElementById("searchCard")!.style.height = "auto"
 
 
 
 
 
-                themec!.style.height = ""
-                cloc!.style.height = "100%"
+                document.getElementById("themeCard")!.style.height = ""
+                document.getElementById("cloakCard")!.style.height = "100%"
 
             } else {
-                cloc!.style.height = "300px"
-                themec!.style.marginTop = "-275px"
-                themec!.style.height = "260px"
-                gen!.style.width = "205%"
-                gen!.style.width = "100%"
+                document.getElementById("cloakCard")!.style.height = "300px"
+                document.getElementById("themeCard")!.style.marginTop = "-275px"
+                document.getElementById("themeCard")!.style.height = "260px"
+                document.getElementById("generalCard")!.style.width = "205%"
+                document.getElementById("generalCard")!.style.width = "100%"
 
-                cloc!.style.height = "100%"
-                themec!.style.marginTop = "0"
-                themec!.style.height = "100%"
+                document.getElementById("cloakCard")!.style.height = "100%"
+                document.getElementById("themeCard")!.style.marginTop = "0"
+                document.getElementById("themeCard")!.style.height = "100%"
 
             }
         })
-        $("#googleCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "google") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "google")
-            localStorage.setItem("cloakTab", "google")
-            setTimeout(function () {
-                document.getElementById("cloakTitle")!.textContent = "Google Cloak Active"
-                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google" website as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 2/5'
-                ct!.style.opacity = "1"
-                cd!.style.opacity = "1"
-            }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "google")
-            localStorage.setItem("cloakTab", "google")
-            setTimeout(function () {
-                document.getElementById("cloakTitle")!.textContent = "Google Cloak Active"
-                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google" website as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 2/5'
-                ct!.style.opacity = "1"
-                cd!.style.opacity = "1"
-            }, 200)
-            }
-            
+       
 
-        })
-        $("#schoologyCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "schoology") {
-                    console.log("womp womp womp wopm")
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "schoology")
-                    localStorage.setItem("cloakTab", "schoology")
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "Schoology Cloak Active"
-                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Schoology" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, my opinion, if your school uses this service): 5/5 (Most schools have custom domains for Schoology). If your school does not use this service, your chances are: 2/5'
+
+        $(document).ready(function() {
+            function setCloak(cloak, title, description, element) {
+                ct!.style.opacity = "0";
+                cd!.style.opacity = "0";
+                document.getElementById("customCloakTitleInput")!.style.opacity = "0";
+                document.getElementById("saveCloak")!.style.opacity = "0";
+        
+                setTimeout(function() {
+                    if (element.getAttribute("data-state") == "off") {
+                        
+                        console.log(cloak)
+                        ct!.textContent = "No cloak set.";
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked. Tab cloaks cloak the tab title and icon to reduce the chances of this link getting blocked.";
+                        ct!.style.opacity = "1";
+                        cd!.style.opacity = "1";
+                        localStorage.removeItem("cloak")
+                        if (document.documentElement.classList.contains("dark")){
+                            document.getElementById("favicon")?.setAttribute("href", "/img/favicon_dark.png")
+                        } else {
+                            document.getElementById("favicon")?.setAttribute("href", "/img/favicon_light.png")
+                        }
+                    } else {
+                        localStorage.setItem("cloak", cloak);
+                        localStorage.setItem("cloakTab", cloak);
+                        document.getElementById("cloakTitle")!.textContent = title;
+                        document.getElementById("cloakDescription")!.textContent = description;
+                        ct!.style.opacity = "1";
+                        cd!.style.opacity = "1";
+                        if (cloak == "google" || cloak == "schoology" || cloak == "docs" || cloak == "slides"){
+                            document.getElementById("favicon")?.setAttribute("href", `/img/cloaks/${cloak}.png`)
+                            
+                        } else {
+                            if (cloak == "canvas"){
+                                document.getElementById("favicon")?.setAttribute("href", "/img/cloaks/canvas.ico")
+                            } else {
+                                document.getElementById("favicon")?.setAttribute("href", "/img/cloaks/classroom.svg")
+                            }
+                        }
+                        switch (localStorage.getItem("cloak")) {
+                            case "google":
+                                document.title = 'Google'
+                                break
+                            case "schoology":
+                                document.title = "Home | Schoology"
+                                break
+                            case "docs":
+                                document.title = "Google Docs"
+                                break
+                            case "slides":
+                                document.title = "Google Slides"
+                                break
+                            case "canvas":
+                                document.title = "Canvas"
+                                break
+                            case "classroom":
+                                document.title = "Google Classroom"
+                                break
+                            default:
+                                document.title = "what the sigma"
+                                break
+                            
+                            
+                        }
+                        
+                    }
+                }, 200);
+            }
+        
+            $("#googleCloak").on("click", function() {
+                setCloak("google", "Google Cloak Active", 'You have selected the "Google" website as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 2/5', document.getElementById("googleCloak"));
+            });
+        
+            $("#schoologyCloak").on("click", function() {
+                setCloak("schoology", "Schoology Cloak Active", 'You have selected the "Schoology" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, my opinion, if your school uses this service): 5/5 (Most schools have custom domains for Schoology). If your school does not use this service, your chances are: 2/5', document.getElementById("schoologyCloak"));
+            });
+        
+            $("#canvasCloak").on("click", function() {
+                setCloak("canvas", "Canvas Cloak Active", `You have selected the "Canvas" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion, if your school uses this service): 3/5 (The title set as the cloak may differ than Canvas' actual title)`, document.getElementById("canvasCloak"));
+            });
+        
+            $("#docsCloak").on("click", function() {
+                setCloak("docs", "Docs Cloak Active", 'You have selected the "Google Docs" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 4/5 (They would think your writing an essay)', document.getElementById("docsCloak"));
+            });
+        
+            $("#slidesCloak").on("click", function() {
+                setCloak("slides", "Slides Cloak Active", 'You have selected the "Google Slides" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 3/5', document.getElementById("slidesCloak"));
+            });
+        
+            $("#classroomCloak").on("click", function() {
+                setCloak("classroom", "Classroom Cloak Active", 'You have selected the "Google Classroom" service as your cloak. Chances of your proctor or admin not finding out (if your school uses Google Classroom): 4/5. If your school does not use Google Classroom, your chances are: 1/5. (They would be confused)', document.getElementById("classroomCloak"));
+            });
+        
+            $("#customCloakButton").on("click", function() {
+                ct!.style.opacity = "0";
+                cd!.style.opacity = "0";
+                document.getElementById("customCloakTitleInput")!.style.opacity = "0";
+                document.getElementById("saveCloak")!.style.opacity = "0";
+        
+                setTimeout(function() {
+                    if ($("#customCloakButton").attr("data-state") == "off") {
+                        document.getElementById("cloakTitle")!.textContent = "No cloak set.";
+                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked.";
                         ct!.style.opacity = "1"
                         cd!.style.opacity = "1"
-                    }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "schoology")
-            localStorage.setItem("cloakTab", "schoology")
-            setTimeout(function () {
-                document.getElementById("cloakTitle")!.textContent = "Schoology Cloak Active"
-                document.getElementById("cloakDescription")!.textContent = 'You have selected the "Schoology" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, my opinion, if your school uses this service): 5/5 (Most schools have custom domains for Schoology). If your school does not use this service, your chances are: 2/5'
-                ct!.style.opacity = "1"
-                cd!.style.opacity = "1"
-            }, 200)
-            }
-            
-
-
-        })
-        $("#canvasCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "canvas") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "canvas")
-            localStorage.setItem("cloakTab", "canvas")
-            setTimeout(function () {
-                document.getElementById("cloakTitle")!.textContent = "Canvas Cloak Active"
-                document.getElementById("cloakDescription")!.textContent = `You have selected the "Canvas" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion, if your school uses this service): 3/5 (The title set as the cloak may differ than Canvas' actual title)`
-                ct!.style.opacity = "1"
-                cd!.style.opacity = "1"
-            }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "canvas")
-            localStorage.setItem("cloakTab", "canvas")
-            setTimeout(function () {
-                document.getElementById("cloakTitle")!.textContent = "Canvas Cloak Active"
-                document.getElementById("cloakDescription")!.textContent = `You have selected the "Canvas" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion, if your school uses this service): 3/5 (The title set as the cloak may differ than Canvas' actual title)`
-                ct!.style.opacity = "1"
-                cd!.style.opacity = "1"
-            }, 200)
-            }
-            
-
-        })
-        $("#docsCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "docs") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "docs")
-                    localStorage.setItem("cloakTab", "docs")
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "Docs Cloak Active"
-                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Docs" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 4/5 (They would think your writing an essay)'
-                        ct!.style.opacity = "1"
-                        cd!.style.opacity = "1"
-                    }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "docs")
-                localStorage.setItem("cloakTab", "docs")
-                setTimeout(function () {
-                    document.getElementById("cloakTitle")!.textContent = "Docs Cloak Active"
-                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Docs" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 4/5 (They would think your writing an essay)'
-                    ct!.style.opacity = "1"
-                    cd!.style.opacity = "1"
-                }, 200)
-            }
-
-
-        })
-        $("#slidesCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "slides") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "slides")
-                    localStorage.setItem("cloakTab", "slides")
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "Slides Cloak Active"
-                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Slides" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 3/5'
-                        ct!.style.opacity = "1"
-                        cd!.style.opacity = "1"
-                    }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "slides")
-                localStorage.setItem("cloakTab", "slides")
-                setTimeout(function () {
-                    document.getElementById("cloakTitle")!.textContent = "Slides Cloak Active"
-                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Slides" service as your cloak. Chances of proctor or admin not finding out (the higher the better, approximate, this is my opinion): 3/5'
-                    ct!.style.opacity = "1"
-                    cd!.style.opacity = "1"
-                }, 200)
-            }
-
-
-        })
-        $("#classroomCloak").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "classroom") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "classroom")
-                    localStorage.setItem("cloakTab", "classroom")
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "Classroom Cloak Active"
-                        document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Classroom" service as your cloak. Chances of your proctor or admin not finding out (if your school uses Google Classrom): 4/5. If your school does not use Google Classroom, your chances are: 1/5. (They would be confused)'
-                        ct!.style.opacity = "1"
-                        cd!.style.opacity = "1"
-                    }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "classroom")
-                localStorage.setItem("cloakTab", "classroom")
-                setTimeout(function () {
-                    document.getElementById("cloakTitle")!.textContent = "Classroom Cloak Active"
-                    document.getElementById("cloakDescription")!.textContent = 'You have selected the "Google Classroom" service as your cloak. Chances of your proctor or admin not finding out (if your school uses Google Classrom): 4/5. If your school does not use Google Classroom, your chances are: 1/5. (They would be confused)'
-                    ct!.style.opacity = "1"
-                    cd!.style.opacity = "1"
-                }, 200)
-            }
-
-
-        })
-        $("#customCloakButton").on("click", function () {
-            ct!.style.opacity = "0"
-            cd!.style.opacity = "0"
-            document.getElementById("customCloakTitleInput")!.style.opacity = "0"
-            document.getElementById("saveCloak")!.style.opacity = "0"
-            if (localStorage.getItem("cloak")) {
-                if (localStorage.getItem("cloak") == "custom") {
-                    setTimeout(function () {
-                        document.getElementById("cloakTitle")!.textContent = "No cloak set."
-                        cd!.textContent = "Enable a cloak to reduce the chances of this link getting blocked."
-                    }, 200)
-                } else {
-                    localStorage.setItem("cloak", "custom")
-                    localStorage.setItem("cloakTab", "custom")
-                    setTimeout(function () {
-                        document.getElementById("customCloakTitleInput")!.style.opacity = "1"
-                        document.getElementById("saveCloak")!.style.opacity = "1"
-                        document.getElementById("cloakTitle")!.textContent = "Custom Cloaks"
-                        document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!"
-                        ct!.style.opacity = "1"
-                        cd!.style.opacity = "1"
-                    }, 200)
-                }
-            } else {
-                localStorage.setItem("cloak", "custom")
-                localStorage.setItem("cloakTab", "custom")
-                setTimeout(function () {
-                    document.getElementById("customCloakTitleInput")!.style.opacity = "1"
-                    document.getElementById("saveCloak")!.style.opacity = "1"
-                    document.getElementById("cloakTitle")!.textContent = "Custom Cloaks"
-                    document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!"
-                    ct!.style.opacity = "1"
-                    cd!.style.opacity = "1"
-                }, 200)
-            }
-
-
-
-        })
+                    } else {
+                        localStorage.setItem("cloak", "custom");
+                        localStorage.setItem("cloakTab", "custom");
+                        document.getElementById("customCloakTitleInput")!.style.opacity = "1";
+                        document.getElementById("saveCloak")!.style.opacity = "1";
+                        document.getElementById("cloakTitle")!.textContent = "Custom Cloaks";
+                        document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!";
+                        ct!.style.opacity = "1";
+                        cd!.style.opacity = "1";
+                    }
+                }, 200);
+            });
+        });
+        
 
 
 
@@ -942,11 +835,11 @@ function login() {
 
                                 <div className="flex items-center justify-between">
                                     <div>
-                                        <p id="cloakTitle" className="font-medium">Push Notifications</p>
-                                        <p id="cloakDescription" className="text-muted-foreground text-sm">Receive push notifications on your devices</p>
-                                        <Input id="customCloakTitleInput" className="" placeholder="Enter the title of the custom cloak..."></Input>
+                                        <p id="cloakTitle" className="font-medium">No cloak set.</p>
+                                        <p id="cloakDescription" className="text-muted-foreground text-sm">Enable a cloak to reduce the chances of this link getting blocked. Tab cloaks cloak the tab title and icon to reduce the chances of this link getting blocked.</p>
+                                        <Input id="customCloakTitleInput" className="opacity-0" placeholder="Enter the title of the custom cloak..."></Input>
                                         <br />
-                                        <Button id="saveCloak" className="">Save</Button>
+                                        <Button id="saveCloak" className="opacity-0">Save</Button>
                                     </div>
 
 
