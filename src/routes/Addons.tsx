@@ -27,7 +27,101 @@ import { Link } from "react-router-dom"
 import { Navbar } from "@/components/component/navbar"
 import 'overlayscrollbars/overlayscrollbars.css';
 import { OverlayScrollbars } from 'overlayscrollbars';
+import localForage from "localforage"
 function login() {
+  const { theme } = useTheme();
+    const icon = document.getElementById("favicon")
+  var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
+  const osInstance = OverlayScrollbars(document.body, {
+    scrollbars: {
+      theme: `os-theme-${themeee}`,
+    }
+
+  });
+  function isValidUrl(string) {
+    try {
+      new URL(string);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+  async function setInitialColor() {
+    const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+
+
+    const box = document.getElementById("searchBox")
+    var themeEl = document.getElementById(themeClass as string)
+    if (themeClass == "dark") {
+        var themeOpp = document.getElementById("light")
+        osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+    } else {
+        var themeOpp = document.getElementById("dark")
+        osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+    }
+    if (themeEl?.classList.contains("opacity-0")) {
+        themeOpp?.classList.add("opacity-0")
+        themeEl.classList.remove("opacity-0")
+    }
+
+
+
+    Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
+        element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+        element.style.backgroundPosition = 'center center';
+        element.style.backgroundSize = 'cover';
+        element.style.backgroundRepeat = 'no-repeat';
+        element.style.backgroundAttachment = 'fixed';
+        element.style.height = '100%';
+    });
+    document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+    document.body.style.backgroundPosition = 'center center';
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundRepeat = 'no-repeat';
+    document.body.style.backgroundAttachment = 'fixed';
+    document.body.style.height = '100%';
+    if (localStorage.getItem("customCloak")) {
+        if (localStorage.getItem('customCloak') == "active") {
+            document.title = await localForage.getItem("customCloakTitle") as string
+            var favIcon = document.getElementById('favicon') as HTMLLinkElement
+            favIcon.href = await localForage.getItem("customCloakImg") as string
+        }
+    }
+    if (!localStorage.getItem("cloak")) {
+        icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+    }
+
+}
+useEffect(() => {
+
+
+    setInitialColor();
+
+    const classObserver = new MutationObserver(handleClassAttributeChanges);
+
+    const observerOptions = {
+        attributes: true,
+        attributeFilter: ["class"],
+        subtree: false,
+    };
+
+    classObserver.observe(document.documentElement, observerOptions);
+
+    return () => {
+        classObserver.disconnect();
+    };
+}, [theme]);
+
+function handleClassAttributeChanges(
+    mutationsList,
+    observer,
+) {
+    for (const mutation of mutationsList || []) {
+        if (mutation.type === "attributes" && mutation.attributeName === "class") {
+            setInitialColor();
+        }
+    }
+}
     useEffect(() => {
       Array.from(document.getElementsByClassName('os-scrollbar') as HTMLCollectionOf<HTMLElement>).forEach(element => {
         element.style.transition = ''
