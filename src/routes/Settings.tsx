@@ -57,6 +57,7 @@ import { toast } from "sonner"
 import localForage from "localforage";
 
 function login() {
+    const isDesktop = false
     const [imgPreviewSrc, setImgPreviewSrc] = useState("")
     const [hintVisibility, setHintVisibility] = useState("none")
     var ct = document.getElementById("cloakTitle")
@@ -65,6 +66,18 @@ function login() {
     var themec = document.getElementById("themeCard")
     var cloc = document.getElementById("cloakCard")
     var sea = document.getElementById("searchCard")
+    function handleCloakInputChange() {
+        console.log("changeeee")
+        var ccti = document.getElementById("customCloakTitleInput") as HTMLInputElement
+        localForage.setItem("customCloakTitle", ccti.value)
+        if (ccti.value == "") {
+            document.title = "Daylight | Proxathon 2024"
+        } else {
+            document.title = ccti.value
+        }
+        ;
+
+    }
     function check() {
 
         if (document.getElementById("searchCard")!.style.height == "400px" && window.innerWidth >= 1024) {
@@ -180,6 +193,58 @@ function login() {
         }
     }
     useEffect(() => {
+        if (isDesktop) {
+          const lightDiv = document.createElement('div');
+          lightDiv.id = 'light';
+          Object.assign(lightDiv.style, {
+            backgroundImage: 'url("/img/bg/bgLight.png")',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            height: '100%',
+            width: '100%',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 0,
+          });
+    
+          const darkDiv = document.createElement('div');
+          darkDiv.id = 'dark';
+          Object.assign(darkDiv.style, {
+            backgroundImage: 'url("/img/bg/bgDark.png")',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            height: '100%',
+            width: '100%',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 0,
+            opacity: '0',
+          });
+          
+          const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+          document.body.appendChild(lightDiv);
+          document.body.appendChild(darkDiv);
+          document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+          document.body.style.backgroundPosition = 'center center';
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundRepeat = 'no-repeat';
+          document.body.style.backgroundAttachment = 'fixed';
+          document.body.style.height = '100%';
+          return () => {
+            document.body.removeChild(lightDiv);
+            document.body.removeChild(darkDiv);
+          };
+        }
+      }, [isDesktop]);
+    useEffect(() => {
         if (!localStorage.getItem("search")) {
             localStorage.setItem("search", "google")
         }
@@ -193,13 +258,21 @@ function login() {
         }
         if (localStorage.getItem("cloak")) {
             $(`#${localStorage.getItem("cloak")}Cloak`).trigger("click")
+            setTimeout(function () {
+                $(`#${localStorage.getItem("cloak")}Cloak`).trigger("click")
+                setTimeout(function () {
+                    $(`#${localStorage.getItem("cloak")}Cloak`).trigger("click")
+                }, 100)
+            }, 350)
+
+
             if (localStorage.getItem("cloak") == "custom") {
                 document.getElementById("cloakTitle")!.style.opacity = "0";
                 document.getElementById("cloakDescription")!.style.opacity = "0";
                 document.getElementById("customCloakTitleInput")!.style.opacity = "0";
                 document.getElementById("saveCloak")!.style.opacity = "0";
                 document.getElementById("uploadIcon")!.style.opacity = "0";
-                setTimeout(function () {
+                setTimeout(async function () {
                     if ($("#customCloak").attr("data-state") == "off") {
                         document.getElementById("cloakTitle")!.textContent = "No cloak set.";
                         document.getElementById("cloakDescription")!.textContent = "Enable a cloak to reduce the chances of this link getting blocked.";
@@ -213,8 +286,33 @@ function login() {
                         document.getElementById("uploadIcon")!.style.opacity = "1";
                         document.getElementById("cloakTitle")!.textContent = "Custom Cloaks";
                         document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!";
+                        if (localStorage.getItem("customCloak") == "active") {
+                            document.getElementById("cloakTitle")!.textContent = "Custom Cloak Active";
+                        }
                         document.getElementById("cloakTitle")!.style.opacity = "1";
                         document.getElementById("cloakDescription")!.style.opacity = "1";
+                        if (await localForage.getItem("customCloakTitle") && await localForage.getItem("customCloakTitle") !== "" && await localForage.getItem("customCloakImg") && await localForage.getItem("customCloakImg") !== "") {
+                            var ccti = document.getElementById("customCloakTitleInput") as HTMLInputElement
+                            ccti.value = (await localForage.getItem("customCloakTitle") as string)
+                            var upi = document.getElementById("uploadIcon")
+                            var sc = document.getElementById("saveCloak")
+                            var ip = document.getElementById("iconPreview")
+                            var ii = document.getElementById("iconIMG")
+                            setImgPreviewSrc(await localForage.getItem("customCloakImg") as string)
+                            upi!.style.top = "0"
+                            sc!.style.top = "0"
+                            upi!.style.position = ""
+                            sc!.style.position = ""
+                            setTimeout(function () {
+                                ip!.style.opacity = "1"
+                                setHintVisibility("block")
+
+
+
+                            }, 150)
+
+
+                        }
                     }
                 }, 200);
             }
@@ -274,45 +372,69 @@ function login() {
     const { setTheme } = useTheme()
     const { theme } = useTheme();
     const icon = document.getElementById("favicon")
-    function setInitialColor() {
-        const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-
-
+    async function setInitialColor() {
+        if (isDesktop){
+          const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+    
+    
         const box = document.getElementById("searchBox")
         var themeEl = document.getElementById(themeClass as string)
         if (themeClass == "dark") {
-            var themeOpp = document.getElementById("light")
-            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+          var themeOpp = document.getElementById("light")
+          osInstance.options({ scrollbars: { theme: `os-theme-light` } });
         } else {
-            var themeOpp = document.getElementById("dark")
-            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+          var themeOpp = document.getElementById("dark")
+          osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
         }
         if (themeEl?.classList.contains("opacity-0")) {
-            themeOpp?.classList.add("opacity-0")
-            themeEl.classList.remove("opacity-0")
+          themeOpp?.classList.add("opacity-0")
+          themeEl.classList.remove("opacity-0")
         }
-
-
-
+    
+    
+    
         Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
-            element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-            element.style.backgroundPosition = 'center center';
-            element.style.backgroundSize = 'cover';
-            element.style.backgroundRepeat = 'no-repeat';
-            element.style.backgroundAttachment = 'fixed';
-            element.style.height = '100%';
+          element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+          element.style.backgroundPosition = 'center center';
+          element.style.backgroundSize = 'cover';
+          element.style.backgroundRepeat = 'no-repeat';
+          element.style.backgroundAttachment = 'fixed';
+          element.style.height = '100%';
         });
-        document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-        document.body.style.backgroundPosition = 'center center';
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundRepeat = 'no-repeat';
-        document.body.style.backgroundAttachment = 'fixed';
-        document.body.style.height = '100%';
-        if (!localStorage.getItem("cloak")) {
-            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+        
+        if (localStorage.getItem("customCloak")) {
+          if (localStorage.getItem('customCloak') == "active") {
+            document.title = await localForage.getItem("customCloakTitle") as string
+            var favIcon = document.getElementById('favicon') as HTMLLinkElement
+            favIcon.href = await localForage.getItem("customCloakImg") as string
+          }
         }
-
-    }
+        if (!localStorage.getItem("cloak")) {
+          icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+        }
+        } else {
+          const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+          if (themeClass == "dark") {
+            
+            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+          } else {
+            
+            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+          }
+          if (localStorage.getItem("customCloak")) {
+            if (localStorage.getItem('customCloak') == "active") {
+              document.title = await localForage.getItem("customCloakTitle") as string
+              var favIcon = document.getElementById('favicon') as HTMLLinkElement
+              favIcon.href = await localForage.getItem("customCloakImg") as string
+            }
+          }
+          if (!localStorage.getItem("cloak")) {
+            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+          }
+        }
+        
+    
+      }
     useEffect(() => {
 
 
@@ -419,6 +541,18 @@ function login() {
 
             });
         });
+        $("#saveCloak").on("click", async function () {
+            if (await localForage.getItem('customCloakTitle') && await localForage.getItem("customCloakTitle") !== "") {
+                if (await localForage.getItem("customCloakImg") && await localForage.getItem('customCloakImg') !== "") {
+                    console.log("Both image and title have been set. Updating Document title and favicon across all pages.")
+                    localStorage.setItem("customCloak", "active")
+                    document.title = await localForage.getItem("customCloakTitle") as string
+                    var favIcon = document.getElementById("favicon") as HTMLLinkElement
+                    favIcon.href = await localForage.getItem("customCloakImg") as string
+
+                }
+            }
+        })
         $("#settings").on("click", function () {
 
             var elements = {
@@ -600,9 +734,16 @@ function login() {
                 document.getElementById("customCloakTitleInput")!.style.opacity = "0";
                 document.getElementById("saveCloak")!.style.opacity = "0";
                 document.getElementById("uploadIcon")!.style.opacity = "0";
+                document.getElementById("iconPreview")!.style.opacity = "0"
+                document.getElementById("iconHint")!.style.transition = "opacity 0.2s ease;"
+                document.getElementById("iconHint")!.style.opacity = "0"
                 setTimeout(function () {
                     if (element.getAttribute("data-state") == "off") {
-
+                        document.getElementById("customCloakTitleInput")!.style.display = "none";
+                        document.getElementById("saveCloak")!.style.display = "none";
+                        document.getElementById("uploadIcon")!.style.display = "none";
+                        document.getElementById("iconPreview")!.style.display = "none"
+                        setHintVisibility("none")
                         console.log(cloak)
                         document.getElementById("cloakTitle")!.textContent = "No cloak set.";
                         document.getElementById("cloakDescription")!.textContent = "Enable a cloak to reduce the chances of this link getting blocked. Tab cloaks cloak the tab title and icon to reduce the chances of this link getting blocked.";
@@ -619,16 +760,31 @@ function login() {
                         localStorage.setItem("cloakTab", cloak);
                         document.getElementById("cloakTitle")!.textContent = title;
                         document.getElementById("cloakDescription")!.textContent = description;
+                        document.getElementById("customCloakTitleInput")!.style.display = "none";
+                        document.getElementById("saveCloak")!.style.display = "none";
+                        document.getElementById("uploadIcon")!.style.display = "none";
+                        document.getElementById("iconPreview")!.style.display = "none"
                         document.getElementById("cloakTitle")!.style.opacity = "1";
                         document.getElementById("cloakDescription")!.style.opacity = "1";
+                        document.getElementById("iconHint")!.style.opacity = "0"
+                        setHintVisibility("none")
                         if (cloak == "google" || cloak == "schoology" || cloak == "docs" || cloak == "slides") {
                             document.getElementById("favicon")?.setAttribute("href", `/img/cloaks/${cloak}.png`)
+                            if (localStorage.getItem("customCloak")) {
+                                localStorage.removeItem("customCloak")
+                            }
 
                         } else {
                             if (cloak == "canvas") {
                                 document.getElementById("favicon")?.setAttribute("href", "/img/cloaks/canvas.ico")
+                                if (localStorage.getItem("customCloak")) {
+                                    localStorage.removeItem("customCloak")
+                                }
                             } else {
                                 document.getElementById("favicon")?.setAttribute("href", "/img/cloaks/classroom.svg")
+                                if (localStorage.getItem("customCloak")) {
+                                    localStorage.removeItem("customCloak")
+                                }
                             }
                         }
                         switch (localStorage.getItem("cloak")) {
@@ -691,22 +847,62 @@ function login() {
                 document.getElementById("customCloakTitleInput")!.style.opacity = "0";
                 document.getElementById("saveCloak")!.style.opacity = "0";
                 document.getElementById("uploadIcon")!.style.opacity = "0";
-                setTimeout(function () {
+
+                document.getElementById("iconPreview")!.style.opacity = "0"
+                document.getElementById("iconHint")!.style.transition = "opacity 0.2s ease;"
+                document.getElementById("iconHint")!.style.opacity = "0"
+
+                setTimeout(async function () {
                     if ($("#customCloak").attr("data-state") == "off") {
                         document.getElementById("cloakTitle")!.textContent = "No cloak set.";
                         document.getElementById("cloakDescription")!.textContent = "Enable a cloak to reduce the chances of this link getting blocked.";
+
+                        document.getElementById("customCloakTitleInput")!.style.display = "none";
+                        document.getElementById("saveCloak")!.style.display = "none";
+                        document.getElementById("uploadIcon")!.style.display = "none";
+                        document.getElementById("iconPreview")!.style.display = "none"
                         document.getElementById("cloakTitle")!.style.opacity = "1"
                         document.getElementById("cloakDescription")!.style.opacity = "1"
+                        setHintVisibility("none")
                     } else {
                         localStorage.setItem("cloak", "custom");
                         localStorage.setItem("cloakTab", "custom");
+                        document.getElementById("customCloakTitleInput")!.style.display = "";
+                        document.getElementById("saveCloak")!.style.display = "";
+                        document.getElementById("uploadIcon")!.style.display = "";
+                        document.getElementById("iconPreview")!.style.display = ""
                         document.getElementById("customCloakTitleInput")!.style.opacity = "1";
                         document.getElementById("saveCloak")!.style.opacity = "1";
                         document.getElementById("uploadIcon")!.style.opacity = "1";
+                        document.getElementById("iconPreview")!.style.opacity = "1"
+                        setHintVisibility("block")
+                        document.getElementById("iconHint")!.style.opacity = "1"
                         document.getElementById("cloakTitle")!.textContent = "Custom Cloaks";
                         document.getElementById("cloakDescription")!.textContent = "Want to cloak a website that's not listed? Make your own!";
                         document.getElementById("cloakTitle")!.style.opacity = "1";
                         document.getElementById("cloakDescription")!.style.opacity = "1";
+                        if (await localForage.getItem("customCloakTitle") && await localForage.getItem('customCloakImg') && await localForage.getItem("customCloakTitle") !== "" && await localForage.getItem("customCloakImg") !== "") {
+                            var upi = document.getElementById("uploadIcon")
+                            var sc = document.getElementById("saveCloak")
+                            var ip = document.getElementById("iconPreview")
+                            var ii = document.getElementById("iconIMG")
+                            setImgPreviewSrc(await localForage.getItem("customCloakImg") as string)
+                            upi!.style.top = "0"
+                            sc!.style.top = "0"
+                            upi!.style.position = ""
+                            sc!.style.position = ""
+                            setTimeout(async function () {
+                                ip!.style.opacity = "1"
+                                setHintVisibility("block")
+
+                                var ccti = document.getElementById("customCloakTitleInput") as HTMLInputElement
+                                ccti.value = await localForage.getItem("customCloakTitle") as string
+
+
+
+                            }, 150)
+                        }
+
                     }
                 }, 200);
             });
@@ -722,18 +918,18 @@ function login() {
                     try {
                         var reader = new FileReader();
                         reader.readAsDataURL(file);
-            
+
                         // promise to work with sonnre
                         const fileReadPromise = new Promise((resolve, reject) => {
                             reader.onload = readerEvent => {
                                 if (readerEvent.target) {
                                     var content = readerEvent!.target.result; //yay content!!!
-                                    
+
                                     var image = new Image();
-            
+
                                     image.src = readerEvent!.target.result as string;
-            
-                                   
+
+
                                     image.onload = function () {
                                         var height = image.height;
                                         var width = image.width;
@@ -742,13 +938,13 @@ function login() {
                                             reject(new Error("Image width and height should not exceed 500px."));
                                             return;
                                         }
-            
+
                                         // Wait an additional second before resolving the promise
                                         setTimeout(() => {
                                             resolve(content);
                                         }, 1000);
                                     };
-            
+
                                     image.onerror = () => {
                                         reject(new Error("Error loading image"));
                                     };
@@ -756,12 +952,12 @@ function login() {
                                     reject(new Error("File reading failed"));
                                 }
                             };
-            
+
                             reader.onerror = error => {
                                 reject(new Error("Error reading file"));
                             };
                         });
-            
+
                         // Use the actual promise in toast.promise
                         toast.promise(fileReadPromise, {
                             loading: 'Loading image...',
@@ -771,7 +967,7 @@ function login() {
                             },
                             error: 'Error loading image',
                         });
-            
+
                     } catch (e) {
                         console.log("Error has occurred, most likely user clicked cancel. Error:", e);
                     }
@@ -786,46 +982,46 @@ function login() {
                 }, 350)
 
             }
-            
-        })
-        
-        $(function() {
-            const iconPreview = document.getElementById("iconPreview");
-            $("#unroundImages").on("click", function() {
-                if (localStorage.getItem("rounded") !== "true" && iconPreview?.style.borderRadius == "999px") {
-                    
-                    iconPreview!.style.borderRadius = "0";
-                            console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
-                            if (iconPreview?.classList.contains("rounded-full")) {
-                                iconPreview?.classList.remove("rounded-full");
-                                setTimeout(function(){
-                                    console.log("eeeeeeeeee")
-                                }, 300)
-                            }
-                    localStorage.setItem("rounded", "true")
-                  }
-              
-                  
-        });
-            $("#roundImages").on("click", function(){
-                if (localStorage.getItem("rounded") == "true" && iconPreview?.style.borderRadius !== "999px") {
-                    
-                    iconPreview!.style.borderRadius = "999px";
-                            console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
-                            if (iconPreview?.classList.contains("rounded-full")) {
-                                iconPreview?.classList.remove("rounded-full");
-                                setTimeout(function(){
-                                    console.log("eeeeeeeeee")
-                                }, 300)
-                            }
-                    localStorage.removeItem("rounded")
-                  }
-            })
-    })
 
-        
-        
-        function showIconPreview(dataURI){
+        })
+
+        $(function () {
+            const iconPreview = document.getElementById("iconPreview");
+            $("#unroundImages").on("click", function () {
+                if (localStorage.getItem("rounded") !== "true" && iconPreview?.style.borderRadius == "999px") {
+
+                    iconPreview!.style.borderRadius = "0";
+                    console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
+                    if (iconPreview?.classList.contains("rounded-full")) {
+                        iconPreview?.classList.remove("rounded-full");
+                        setTimeout(function () {
+                            console.log("eeeeeeeeee")
+                        }, 300)
+                    }
+                    localStorage.setItem("rounded", "true")
+                }
+
+
+            });
+            $("#roundImages").on("click", function () {
+                if (localStorage.getItem("rounded") == "true" && iconPreview?.style.borderRadius !== "999px") {
+
+                    iconPreview!.style.borderRadius = "999px";
+                    console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
+                    if (iconPreview?.classList.contains("rounded-full")) {
+                        iconPreview?.classList.remove("rounded-full");
+                        setTimeout(function () {
+                            console.log("eeeeeeeeee")
+                        }, 300)
+                    }
+                    localStorage.removeItem("rounded")
+                }
+            })
+        })
+
+
+
+        function showIconPreview(dataURI) {
             console.log("data uri from showiconpreview", dataURI)
             var upi = document.getElementById("uploadIcon")
             var sc = document.getElementById("saveCloak")
@@ -836,18 +1032,20 @@ function login() {
             sc!.style.top = "0"
             upi!.style.position = ""
             sc!.style.position = ""
-            setTimeout(function(){
+            setTimeout(function () {
                 ip!.style.opacity = "1"
                 setHintVisibility("block")
                 localForage.setItem("customCloakImg", dataURI)
+                console.log("temporarily stored currently upload icon in to IndexDB")
 
-                
+
+
             }, 150)
-            
-            
-            
+
+
+
         }
-       
+
 
 
 
@@ -858,38 +1056,7 @@ function login() {
         <>
 
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <div id="light" style={{
-                    backgroundImage: 'url("/img/bg/bgLight.png")',
-                    backgroundPosition: 'center center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundAttachment: 'fixed',
-                    height: '100%',
-                    width: '100%',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 0,
-                }}>
-
-                </div>
-                <div id="dark" style={{
-                    backgroundImage: 'url("/img/bg/bgDark.png")',
-                    backgroundPosition: 'center center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundAttachment: 'fixed',
-                    height: '100%',
-                    width: '100%',
-                    position: 'fixed',
-                    top: '50%',
-                    left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    zIndex: 0,
-                }} className="opacity-0">
-
-                </div>
+                
                 <div>
                     <ModeToggle></ModeToggle>
                     <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/"></Link>
@@ -1001,7 +1168,7 @@ function login() {
                                     <div>
                                         <p id="cloakTitle" className="font-medium">No cloak set.</p>
                                         <p id="cloakDescription" className="text-muted-foreground text-sm">Enable a cloak to reduce the chances of this link getting blocked. Tab cloaks cloak the tab title and icon to reduce the chances of this link getting blocked.</p>
-                                        <Input id="customCloakTitleInput" className="opacity-0" placeholder="Enter the title of the custom cloak..."></Input>
+                                        <Input id="customCloakTitleInput" className="opacity-0" onChange={handleCloakInputChange} placeholder="Enter the title of the custom cloak..."></Input>
                                         <input className="hidden" accept="image/*" type="file" id="iconUpload"></input>
                                         <br />
                                         <Avatar style={{ width: "80px", height: "80px", borderRadius: "999px" }} className="opacity-0" id="iconPreview" >
@@ -1012,7 +1179,7 @@ function login() {
                                         <br></br>
                                         <Button id="saveCloak" className="opacity-0">Save <Save style={{ width: "20px", height: "16px" }} /></Button>
                                         <Button id="uploadIcon" className="opacity-0">Upload Icon <ImageUp style={{ width: "20px", height: "16px" }} /></Button>
-                                        <CardDescription style={{display: hintVisibility}}>The image preview will round or circlify images. If you want to view the raw image without any rounding, click <Button id="unroundImages" style={{padding: "0", height: "0"}} variant="link">here.</Button> Click <Button id="roundImages" style={{padding: "0", height: "0"}} variant="link">here</Button> if you want to round the images again.</CardDescription>
+                                        <CardDescription id="iconHint" style={{ display: hintVisibility }}>The image preview will round or circlify images. If you want to view the raw image without any rounding, click <Button id="unroundImages" style={{ padding: "0", height: "0" }} variant="link">here.</Button> Click <Button id="roundImages" style={{ padding: "0", height: "0" }} variant="link">here</Button> if you want to round the images again.</CardDescription>
                                     </div>
 
 
