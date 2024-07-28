@@ -13,7 +13,7 @@ import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 import { epoxyPath } from "./node_modules/@mercuryworkshop/epoxy-transport/lib/index";
 //the normal library does not have type definitions, so we're using a fork (mine)
 //i wasn't able to just use @mercuryworkshop/epoxy-transport because for some reason it wasn't looking in the node modules, but was looking through npm or something
-import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
+import { libcurlPath } from "@mercuryworkshop/libcurl-transport/";
 import { bareModulePath } from "./node_modules/@mercuryworkshop/bare-as-module3/lib/index"
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { meteorPath } from "meteorproxy"
