@@ -46,7 +46,7 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   width: 110px;
-  transition: width 0.3s ease, opacity 0.2s ease;
+  transition: width 0.3s ease, opacity 0.2s ease, top 0.3s ease;
 }
 
 #uploadIcon:hover {
@@ -55,7 +55,7 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   width: 133.09px;
-  transition: width 0.3s ease, opacity 0.2s ease;
+  transition: width 0.3s ease, opacity 0.2s ease, top 0.3s ease;
 }
 
 #cloakTitle {
@@ -72,7 +72,7 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   width: 60px;
-  transition: opacity 0.2s ease, width 0.3s ease;
+  transition: opacity 0.2s ease, width 0.3s ease, top 0.3s ease;
 }
 
 #saveCloak:hover {
@@ -81,9 +81,11 @@
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
   width: 84.67px;
-  transition: opacity 0.2s ease, width 0.3s ease;
+  transition: opacity 0.2s ease, width 0.3s ease, top 0.3s ease;
 }
-
+#iconPreview{
+  transition: opacity 0.4s ease, border-radius 0.6s ease;
+}
 #customCloakTitleInput {
   transition: all 0.2s ease;
 }

@@ -52,8 +52,13 @@ import { SiCanvas, SiGoogleclassroom, SiGoogledocs, SiGoogleslides } from "react
 import { TbWorld } from "react-icons/tb";
 import Schoology from "@/components/Icons"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+import localForage from "localforage";
 
 function login() {
+    const [imgPreviewSrc, setImgPreviewSrc] = useState("")
+    const [hintVisibility, setHintVisibility] = useState("none")
     var ct = document.getElementById("cloakTitle")
     var cd = document.getElementById("cloakDescription")
     var gen = document.getElementById("generalCard")
@@ -148,7 +153,7 @@ function login() {
             value: "rammerhead",
             label: "Rammerhead",
         },
-        
+
         {
             value: "scramjet",
             label: "Scramjet (experimental)"
@@ -188,7 +193,7 @@ function login() {
         }
         if (localStorage.getItem("cloak")) {
             $(`#${localStorage.getItem("cloak")}Cloak`).trigger("click")
-            if (localStorage.getItem("cloak") == "custom"){
+            if (localStorage.getItem("cloak") == "custom") {
                 document.getElementById("cloakTitle")!.style.opacity = "0";
                 document.getElementById("cloakDescription")!.style.opacity = "0";
                 document.getElementById("customCloakTitleInput")!.style.opacity = "0";
@@ -706,9 +711,143 @@ function login() {
                 }, 200);
             });
         });
-        $("#uploadIcon").on("click", function(){
+        $("#uploadIcon").on("click", function () {
 
+            var input = document.getElementById("iconUpload") as HTMLInputElement
+            input!.onchange = e => {
+                var target = e!.target as HTMLInputElement;
+                if (target.files) {
+                    var file = target?.files[0];
+                    // set up file stuff
+                    try {
+                        var reader = new FileReader();
+                        reader.readAsDataURL(file);
+            
+                        // promise to work with sonnre
+                        const fileReadPromise = new Promise((resolve, reject) => {
+                            reader.onload = readerEvent => {
+                                if (readerEvent.target) {
+                                    var content = readerEvent!.target.result; //yay content!!!
+                                    
+                                    var image = new Image();
+            
+                                    image.src = readerEvent!.target.result as string;
+            
+                                   
+                                    image.onload = function () {
+                                        var height = image.height;
+                                        var width = image.width;
+                                        if (height > 500 || width > 500) {
+                                            toast.error("Error: Image width and height should not exceed 500px.");
+                                            reject(new Error("Image width and height should not exceed 500px."));
+                                            return;
+                                        }
+            
+                                        // Wait an additional second before resolving the promise
+                                        setTimeout(() => {
+                                            resolve(content);
+                                        }, 1000);
+                                    };
+            
+                                    image.onerror = () => {
+                                        reject(new Error("Error loading image"));
+                                    };
+                                } else {
+                                    reject(new Error("File reading failed"));
+                                }
+                            };
+            
+                            reader.onerror = error => {
+                                reject(new Error("Error reading file"));
+                            };
+                        });
+            
+                        // Use the actual promise in toast.promise
+                        toast.promise(fileReadPromise, {
+                            loading: 'Loading image...',
+                            success: (content) => {
+                                showIconPreview(content)
+                                return 'Image loaded successfully';
+                            },
+                            error: 'Error loading image',
+                        });
+            
+                    } catch (e) {
+                        console.log("Error has occurred, most likely user clicked cancel. Error:", e);
+                    }
+                }
+            }
+            if (input && localStorage.getItem("fileUpload") !== "true") {
+                input!.click();
+                localStorage.setItem("fileUpload", "true")
+            } else {
+                setTimeout(function () {
+                    localStorage.removeItem('fileUpload')
+                }, 350)
+
+            }
+            
         })
+        
+        $(function() {
+            const iconPreview = document.getElementById("iconPreview");
+            $("#unroundImages").on("click", function() {
+                if (localStorage.getItem("rounded") !== "true" && iconPreview?.style.borderRadius == "999px") {
+                    
+                    iconPreview!.style.borderRadius = "0";
+                            console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
+                            if (iconPreview?.classList.contains("rounded-full")) {
+                                iconPreview?.classList.remove("rounded-full");
+                                setTimeout(function(){
+                                    console.log("eeeeeeeeee")
+                                }, 300)
+                            }
+                    localStorage.setItem("rounded", "true")
+                  }
+              
+                  
+        });
+            $("#roundImages").on("click", function(){
+                if (localStorage.getItem("rounded") == "true" && iconPreview?.style.borderRadius !== "999px") {
+                    
+                    iconPreview!.style.borderRadius = "999px";
+                            console.log("border radius is now set to 0", iconPreview?.style.borderRadius);
+                            if (iconPreview?.classList.contains("rounded-full")) {
+                                iconPreview?.classList.remove("rounded-full");
+                                setTimeout(function(){
+                                    console.log("eeeeeeeeee")
+                                }, 300)
+                            }
+                    localStorage.removeItem("rounded")
+                  }
+            })
+    })
+
+        
+        
+        function showIconPreview(dataURI){
+            console.log("data uri from showiconpreview", dataURI)
+            var upi = document.getElementById("uploadIcon")
+            var sc = document.getElementById("saveCloak")
+            var ip = document.getElementById("iconPreview")
+            var ii = document.getElementById("iconIMG")
+            setImgPreviewSrc(dataURI)
+            upi!.style.top = "0"
+            sc!.style.top = "0"
+            upi!.style.position = ""
+            sc!.style.position = ""
+            setTimeout(function(){
+                ip!.style.opacity = "1"
+                setHintVisibility("block")
+                localForage.setItem("customCloakImg", dataURI)
+
+                
+            }, 150)
+            
+            
+            
+        }
+       
 
 
 
@@ -863,14 +1002,17 @@ function login() {
                                         <p id="cloakTitle" className="font-medium">No cloak set.</p>
                                         <p id="cloakDescription" className="text-muted-foreground text-sm">Enable a cloak to reduce the chances of this link getting blocked. Tab cloaks cloak the tab title and icon to reduce the chances of this link getting blocked.</p>
                                         <Input id="customCloakTitleInput" className="opacity-0" placeholder="Enter the title of the custom cloak..."></Input>
+                                        <input className="hidden" accept="image/*" type="file" id="iconUpload"></input>
                                         <br />
-                                        <Avatar style={{width: "80px", height: "80px"}} className="opacity-0" id="iconPreview" >
-                                            <AvatarImage style={{width: "80px", height: "80px"}} src="" alt="Favicon Preview" />
+                                        <Avatar style={{ width: "80px", height: "80px", borderRadius: "999px" }} className="opacity-0" id="iconPreview" >
+                                            <AvatarImage style={{ width: "80px", height: "80px" }} src={imgPreviewSrc} alt="Favicon Preview" id="iconIMG" />
                                             <AvatarFallback>IMG</AvatarFallback>
+                                            <h4>Icon Preview</h4>
                                         </Avatar>
                                         <br></br>
-                                        <Button id="saveCloak" className="opacity-0">Save <Save style={{width: "20px", height: "16px"}}/></Button>
-                                        <Button id="uploadIcon" className="opacity-0">Upload Icon <ImageUp style={{width: "20px", height: "16px"}}/></Button>
+                                        <Button id="saveCloak" className="opacity-0">Save <Save style={{ width: "20px", height: "16px" }} /></Button>
+                                        <Button id="uploadIcon" className="opacity-0">Upload Icon <ImageUp style={{ width: "20px", height: "16px" }} /></Button>
+                                        <CardDescription style={{display: hintVisibility}}>The image preview will round or circlify images. If you want to view the raw image without any rounding, click <Button id="unroundImages" style={{padding: "0", height: "0"}} variant="link">here.</Button> Click <Button id="roundImages" style={{padding: "0", height: "0"}} variant="link">here</Button> if you want to round the images again.</CardDescription>
                                     </div>
 
 
@@ -948,7 +1090,7 @@ function login() {
                     </div>
                 </div>
 
-
+                <Toaster richColors />
                 <motion.div
                     key="privacy-screen"
                     initial={{ scaleX: 1 }}

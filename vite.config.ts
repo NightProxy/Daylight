@@ -8,10 +8,9 @@ import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 // @ts-ignore
 import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
 import path from "path";
-
 import react from "@vitejs/plugin-react";
 import { terser } from 'rollup-plugin-terser';
-
+import { meteorPath } from "meteorproxy"
 const __dirname = path.resolve();
 
 function isErrorWithCause(log: any): log is { cause: { message: string } } {
@@ -33,15 +32,16 @@ export default defineConfig({
           overwrite: false
         },
         {
+          src: `${meteorPath}/meteor.*`.replace(/\\/g, "/"),
+          dest: "meteor",
+          overwrite: false,
+        },
+        {
           src: `${libcurlPath}/**/*`.replace(/\\/g, "/"),
           dest: "libcurl",
           overwrite: false
         },
-        {
-          src: `${dynamicPath}/dynamic.*.js`.replace(/\\/g, "/"),
-          dest: "dynamic",
-          overwrite: false
-        },
+       
       ]
     }),
     million.vite({ auto: true }),
