@@ -72,16 +72,71 @@ import { motion, useIsPresent, useScroll, useSpring } from "framer-motion";
 import Loading from "./loading.tsx"
 import { Link } from "react-router-dom";
 import 'overlayscrollbars/overlayscrollbars.css';
+import localForage from "localforage"
 import { OverlayScrollbars } from 'overlayscrollbars';
+import { useMediaQuery } from "@/hooks/use-media-query"
 // yes i use dotLottie for animations u have a problem lmao
 function Home() {
+  const isDesktop = false
   var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
   const osInstance = OverlayScrollbars(document.body, {
     scrollbars: {
       theme: `os-theme-${themeee}`,
     }
-    
-});
+
+  });
+  useEffect(() => {
+    if (isDesktop) {
+      const lightDiv = document.createElement('div');
+      lightDiv.id = 'light';
+      Object.assign(lightDiv.style, {
+        backgroundImage: 'url("/img/bg/bgLight.png")',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        height: '100%',
+        width: '100%',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 0,
+      });
+
+      const darkDiv = document.createElement('div');
+      darkDiv.id = 'dark';
+      Object.assign(darkDiv.style, {
+        backgroundImage: 'url("/img/bg/bgDark.png")',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        height: '100%',
+        width: '100%',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 0,
+        opacity: '0',
+      });
+      
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+      document.body.appendChild(lightDiv);
+      document.body.appendChild(darkDiv);
+      document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+      document.body.style.backgroundPosition = 'center center';
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundAttachment = 'fixed';
+      document.body.style.height = '100%';
+      return () => {
+        document.body.removeChild(lightDiv);
+        document.body.removeChild(darkDiv);
+      };
+    }
+  }, [isDesktop]);
   function isValidUrl(string) {
     try {
       new URL(string);
@@ -94,8 +149,8 @@ function Home() {
     Array.from(document.getElementsByClassName('os-scrollbar') as HTMLCollectionOf<HTMLElement>).forEach(element => {
       element.style.transition = ''
       element.style.opacity = ""
-      
-  });
+
+    });
     const secondHand = document.querySelector('.clock-times__second') as HTMLDivElement;
     const minsHand = document.querySelector('.clock-times__minute') as HTMLDivElement;
     const hourHand = document.querySelector('.clock-times__hour') as HTMLDivElement;
@@ -144,22 +199,21 @@ function Home() {
   const { setTheme } = useTheme()
   const { theme } = useTheme();
   const icon = document.getElementById("favicon")
-  function setInitialColor() {
-    const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-    
-    
-  
-    
+  async function setInitialColor() {
+    if (isDesktop){
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+
+
     const box = document.getElementById("searchBox")
     var themeEl = document.getElementById(themeClass as string)
-    if (themeClass == "dark"){
+    if (themeClass == "dark") {
       var themeOpp = document.getElementById("light")
-      osInstance.options({ scrollbars: { theme: `os-theme-light` }  });
+      osInstance.options({ scrollbars: { theme: `os-theme-light` } });
     } else {
       var themeOpp = document.getElementById("dark")
-      osInstance.options({ scrollbars: { theme: `os-theme-dark` }  });
+      osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
     }
-    if (themeEl?.classList.contains("opacity-0")){
+    if (themeEl?.classList.contains("opacity-0")) {
       themeOpp?.classList.add("opacity-0")
       themeEl.classList.remove("opacity-0")
     }
@@ -174,13 +228,39 @@ function Home() {
       element.style.backgroundAttachment = 'fixed';
       element.style.height = '100%';
     });
-    document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-    document.body.style.backgroundPosition = 'center center';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundAttachment = 'fixed';
-    document.body.style.height = '100%';
-    icon?.setAttribute("href", `/img/favicon_${themeClass}.png`);
+    
+    if (localStorage.getItem("customCloak")) {
+      if (localStorage.getItem('customCloak') == "active") {
+        document.title = await localForage.getItem("customCloakTitle") as string
+        var favIcon = document.getElementById('favicon') as HTMLLinkElement
+        favIcon.href = await localForage.getItem("customCloakImg") as string
+      }
+    }
+    if (!localStorage.getItem("cloak")) {
+      icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+    }
+    } else {
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+      if (themeClass == "dark") {
+        
+        osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+      } else {
+        
+        osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+      }
+      if (localStorage.getItem("customCloak")) {
+        if (localStorage.getItem('customCloak') == "active") {
+          document.title = await localForage.getItem("customCloakTitle") as string
+          var favIcon = document.getElementById('favicon') as HTMLLinkElement
+          favIcon.href = await localForage.getItem("customCloakImg") as string
+        }
+      }
+      if (!localStorage.getItem("cloak")) {
+        icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+      }
+    }
+    
+
   }
   useEffect(() => {
 
@@ -305,36 +385,10 @@ function Home() {
   return (
 
 
-    <><Suspense fallback={<Loading></Loading>}>
+    <>
+    <Suspense fallback={<Loading></Loading>}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div id="light" style={{  backgroundImage: 'url("/img/bg/bgLight.png")',
-  backgroundPosition: 'center center',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  backgroundAttachment: 'fixed',
-  height: '100%',
-  width: '100%',
-  position: 'fixed',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  zIndex: 0,}}>
-
-      </div>
-      <div id="dark" style={{  backgroundImage: 'url("/img/bg/bgDark.png")',
-  backgroundPosition: 'center center',
-  backgroundSize: 'cover',
-  backgroundRepeat: 'no-repeat',
-  backgroundAttachment: 'fixed',
-  height: '100%',
-  width: '100%',
-  position: 'fixed',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  zIndex: 0,}} className="opacity-0">
-
-      </div>
+        
         <div>
           <ModeToggle></ModeToggle>
           <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/"></Link>
@@ -378,84 +432,84 @@ function Home() {
                 style={{ height: "32px", borderTopRightRadius: "999px", borderBottomRightRadius: "999px", transition: "all 0.2s ease" }} />
             </div>
             <div className="text-container" style={{ background: "transparent", opacity: "0" }}>
-            <h5 className="horizon">The minimalistic browser</h5>
+              <h5 className="horizon">The minimalistic browser</h5>
             </div>
           </div>
           <br></br>
 
           <div className="text-container" style={{ background: "transparent" }}>
-            <h5 className="horizon" style={{paddingRight: "10px", paddingLeft: "10px", borderRadius: "999px", backdropFilter: "blur(10px)"}}>The minimalistic browser</h5>
+            <h5 className="horizon" style={{ paddingRight: "10px", paddingLeft: "10px", borderRadius: "999px", backdropFilter: "blur(10px)" }}>The minimalistic browser</h5>
           </div>
 
 
         </div>
-        
 
 
-      <div className="wrapper">
-        <div className="clock-container">
-          <div className="clock">
-            <div className="clock-circles">
-              <div className="clock-circles__item"></div>
-              <div className="clock-circles__item"></div>
-              <div className="clock-circles__item"></div>
-              <div className="clock-circles__item"></div>
-            </div>
-            <div className="clock-indicators">
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-              <div className="clock-indicators__item"></div>
-            </div>
-            <div className="clock-times">
-              <div className="clock-times__second"></div>
-              <div className="clock-times__minute"></div>
-              <div className="clock-times__hour"></div>
+
+        <div className="wrapper">
+          <div className="clock-container">
+            <div className="clock">
+              <div className="clock-circles">
+                <div className="clock-circles__item"></div>
+                <div className="clock-circles__item"></div>
+                <div className="clock-circles__item"></div>
+                <div className="clock-circles__item"></div>
+              </div>
+              <div className="clock-indicators">
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+                <div className="clock-indicators__item"></div>
+              </div>
+              <div className="clock-times">
+                <div className="clock-times__second"></div>
+                <div className="clock-times__minute"></div>
+                <div className="clock-times__hour"></div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <Dialog >
-      <DialogTrigger asChild>
-        <Button variant="outline" style={{right: "10px", position: "fixed", bottom: "10px"}}>Why the lack of time?</Button>
-      </DialogTrigger>
-      <DialogContent style={{zIndex: "100000000", marginTop: "-10px", width: "750px"}} className="sm:max-w-[600px]">
-        <DialogHeader>
-          <DialogTitle>Why the lack of time?</DialogTitle>
-          <DialogDescription>
-            Why do I mention frequently that I lack time to add features?
-          </DialogDescription>
-        </DialogHeader>
-        <div className="grid gap-4 py-4">
-         
-            <Label htmlFor="name" className="text-left">
-              Why do I mention frequently that I have no time?
-            </Label>
-            <p className="text-muted-foreground ">Well, it's because I started this project late (7/12/2024). You might think that's a ton of time, or you might think what was I doing before that. I was working on what originally was supposed to be my Proxathon entry, however due to some issues, I scrapped the project. This project may come out as a service soon, I don't know. I started the Horizon project back in June, and I spent a lot of time on it, which is why I have (in my book) so little time to complete this. Since I planned on having Tabs as well, I started priortizing certain features (specifically Tabs, because the way I want is complex) which is why some small but important features may not be there.</p>
-           
-     
-          
-      
-        </div>
-        <DialogFooter>
-          <DialogClose asChild>
-          <Button type="submit">Okay (Close)</Button>
-          </DialogClose>
-          
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        <Dialog >
+          <DialogTrigger asChild>
+            <Button variant="outline" style={{ right: "10px", position: "fixed", bottom: "10px" }}>Why the lack of time?</Button>
+          </DialogTrigger>
+          <DialogContent style={{ zIndex: "100000000", marginTop: "-10px", width: "750px" }} className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Why the lack of time?</DialogTitle>
+              <DialogDescription>
+                Why do I mention frequently that I lack time to add features?
+              </DialogDescription>
+            </DialogHeader>
+            <div className="grid gap-4 py-4">
 
-    </ThemeProvider>
+              <Label htmlFor="name" className="text-left">
+                Why do I mention frequently that I have no time?
+              </Label>
+              <p className="text-muted-foreground ">Well, it's because I started this project late (7/12/2024). You might think that's a ton of time, or you might think what was I doing before that. I was working on what originally was supposed to be my Proxathon entry, however due to some issues, I scrapped the project. This project may come out as a service soon, I don't know. I started the Horizon project back in June, and I spent a lot of time on it, which is why I have (in my book) so little time to complete this. Since I planned on having Tabs as well, I started priortizing certain features (specifically Tabs, because the way I want is complex) which is why some small but important features may not be there.</p>
+
+
+
+
+            </div>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button type="submit">Okay (Close)</Button>
+              </DialogClose>
+
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+      </ThemeProvider>
       <motion.div
         key="privacy-screen"
         initial={{ scaleX: 1 }}
@@ -466,7 +520,7 @@ function Home() {
     </Suspense >
     </>
 
-    
+
 
 
 
