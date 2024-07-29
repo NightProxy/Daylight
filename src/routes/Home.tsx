@@ -1,46 +1,23 @@
 /* eslint-disable no-non-null-assertion */
 //heyyy!!!
 import 'lucide-static/font/lucide.css';
-import { useRef, useState, useEffect, lazy, Suspense } from "react";
+import { useEffect, Suspense } from "react";
 
 import "../routes/Home.css";
 import { Button } from "@/components/ui/pill-button";
 import "../app/globals.css";
 import "../index.css";
-import { ScrollArea } from "@/components/ui/scroll-area"
+
 import { ThemeProvider, useTheme } from "@/components/theme-provider";
 import { ModeToggle } from "@/components/mode-toggle";
-import { Progress } from "@/components/ui/progress-5s";
+
 import { Separator } from "@/components/ui/separator";
-import { inject } from '@vercel/analytics';
+
 import React from "react";
 import { Input } from "@/components/ui/input"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { PageTransition } from '@steveeeie/react-page-transition';
-import { useLocation } from 'react-router-dom';
-import { DotLottieReact } from '@lottiefiles/dotlottie-react';
-import $ from 'jquery';
 
 import 'animate.css'
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 
 
 import {
@@ -50,11 +27,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
 import {
   Dialog,
   DialogClose,
@@ -67,15 +39,15 @@ import {
 } from "@/components/ui/dialog"
 import { Navbar } from '@/components/component/navbar.tsx';
 import "movement.css"
-import { obfuscateJSON, deobfuscateJSON } from '../obf.ts';
-import { Home as HomeIcon, Search } from 'lucide-react';
+
+import { Search } from 'lucide-react';
 import { motion, useIsPresent, useScroll, useSpring } from "framer-motion";
 import Loading from "./loading.tsx"
 import { Link } from "react-router-dom";
 import 'overlayscrollbars/overlayscrollbars.css';
 import localForage from "localforage"
 import { OverlayScrollbars } from 'overlayscrollbars';
-import { useMediaQuery } from "@/hooks/use-media-query"
+
 // yes i use dotLottie for animations u have a problem lmao
 function Home() {
   const isDesktop = false
@@ -388,7 +360,7 @@ function Home() {
 
 
     <>
-    <Suspense fallback={<Loading></Loading>}>
+    <Suspense fallback={<div className="text-center justify-center items-center flex">Loading Daylight Systems Incorporated..</div>}>
       <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         
         <div>
