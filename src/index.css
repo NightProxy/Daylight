@@ -172,7 +172,7 @@
 
 @font-face {
   font-family: HorizonOutlined;
-  font-display:
+  font-display: swap;
   src: url("/fonts/horizon_outlined.otf");
 
 }
