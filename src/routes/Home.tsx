@@ -440,7 +440,7 @@ function Home() {
           <br></br>
 
           <div className="text-container" style={{ background: "transparent" }}>
-            <h5 className="horizon" style={{ paddingRight: "10px", paddingLeft: "10px", borderRadius: "999px", backdropFilter: "blur(10px)" }}>The minimalistic browser</h5>
+            <h2 className="horizon" style={{ paddingRight: "10px", paddingLeft: "10px", borderRadius: "999px", backdropFilter: "blur(10px)", fontSize: 'medium' }}>The minimalistic browser</h2>
           </div>
 
 
