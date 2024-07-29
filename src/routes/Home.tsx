@@ -313,6 +313,7 @@ function Home() {
 
 
     });
+    document.getElementById("fontCDN")?.removeAttribute("disabled")
     $("#addons").on("click", function () {
 
       var elements = {
