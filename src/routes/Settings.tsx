@@ -581,71 +581,38 @@ function login() {
             $("#accTrigger").attr("disabled", "true")
             console.log("AHAHAHAH")
             if (window.innerWidth >= 1024) {
-                if (isClosed) {
-
-                    gen!.style.transition = "margin-top 0.2s ease-out"
-                    themec!.style.height = ""
-                    cloc!.style.height = ""
-                    gen!.style.marginTop = "157.5px"
-                    gen!.style.transition = "all 0.2s ease-out"
-                    sea!.style.height = "715px"
-
-
-                    gen!.style.width = "205%"
-                    gen!.style.marginLeft = "105%"
-
-                    setTimeout(function () {
-                        document.getElementById('generalCard')!.style.marginTop = "0"
-                        $("#accTrigger").removeAttr("disabled")
-
-                    }, 200)
-                    setTimeout(function () {
-                        gen!.style.marginTop = "-315px"
-                        gen!.style.transition = "all 0.2s ease-out"
-                    }, 200)
-
-
-
-
-
-
-
-
-
-
-
-                } else {
-                    setTimeout(function () {
-
-
-                        $("#accTrigger").removeAttr("disabled")
-                        document.getElementById('generalCard')!.style.marginTop = "0"
-                        setTimeout(function () {
-                            document.getElementById('generalCard')!.style.marginTop = ""
-                            gen!.style.width = "310%"
-                            gen!.style.marginLeft = "auto"
-                            document.getElementById("searchCard")!.style.height = "400px"
-
-
-
-
-
-                            themec!.style.height = ""
-                            cloc!.style.height = ""
-
+                    if (isClosed){
+                        sea!.style.height = "100%"
+                        document.getElementById("themeCard1024")!.style.height = "100%"
+                        cloc!.style.height = "100%"
+                        setTimeout(function(){
+                            $("#accTrigger").removeAttr('disabled')
                         }, 200)
+                    } else {
+                        $("#accTrigger").removeAttr("disabled")
+                    }
+                    
+                
+                
 
-                    }, 200)
 
 
 
-                }
+
+
+
+
+
+
             } else {
                 console.log(window.innerWidth)
                 if (isClosed) {
                     document.getElementById("cloakDescription")!.style.opacity = "0"
                     document.getElementById("saveCloak")!.style.opacity = "0"
                     document.getElementById("customCloakTitleInput")!.style.opacity = "0"
+                    document.getElementById("iconPreview")!.style.opacity = "0"
+                    document.getElementById('iconHint')!.style.opacity = "0"
+                    document.getElementById("uploadIcon")!.style.opacity = "0"
                     document.getElementById("cloakTitle")!.textContent = "Hide the Advanced \n menu to reveal \n the cloak settings."
                     cloc!.style.height = "285px"
                     themec!.style.marginTop = "-275px"
@@ -671,6 +638,12 @@ function login() {
                                 document.getElementById("cloakTitle")!.textContent = "Custom Cloak Active"
                                 document.getElementById("saveCloak")!.style.opacity = "1"
                                 document.getElementById("customCloakTitleInput")!.style.opacity = "1"
+                                document.getElementById("cloakDescription")!.style.opacity = "1"
+                    document.getElementById("saveCloak")!.style.opacity = "1"
+                    document.getElementById("customCloakTitleInput")!.style.opacity = "1"
+                    document.getElementById("iconPreview")!.style.opacity = "1"
+                    document.getElementById('iconHint')!.style.opacity = "1"
+                    document.getElementById("uploadIcon")!.style.opacity = "1"
                             } else {
 
                                 document.getElementById("cloakTitle")!.textContent = `${capitalizefr(localStorage.getItem("cloak") as string)} Cloak Active`
