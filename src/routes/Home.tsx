@@ -1,6 +1,6 @@
 /* eslint-disable no-non-null-assertion */
 //heyyy!!!
-import 'lucide-static/font/lucide.css';
+
 import { useEffect, Suspense } from "react";
 
 import "../routes/Home.css";
@@ -39,10 +39,10 @@ import {
 } from "@/components/ui/dialog"
 import { Navbar } from '@/components/component/navbar.tsx';
 import "movement.css"
-
+import $ from "jquery"
 import { Search } from 'lucide-react';
 import { motion, useIsPresent, useScroll, useSpring } from "framer-motion";
-import Loading from "./loading.tsx"
+
 import { Link } from "react-router-dom";
 import 'overlayscrollbars/overlayscrollbars.css';
 import localForage from "localforage"
