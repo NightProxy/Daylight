@@ -1,4 +1,5 @@
 /* eslint-disable no-non-null-assertion */
+//heyyy!!!
 import 'lucide-static/font/lucide.css';
 import { useRef, useState, useEffect, lazy, Suspense } from "react";
 
@@ -86,7 +87,7 @@ function Home() {
 
   });
   useEffect(() => {
-    if (isDesktop) {
+    if (isDesktop || localStorage.getItem('appearanceMode') == "true") {
       const lightDiv = document.createElement('div');
       lightDiv.id = 'light';
       Object.assign(lightDiv.style, {

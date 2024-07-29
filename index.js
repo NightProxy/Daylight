@@ -9,26 +9,28 @@ import createRammerhead from "rammerhead/src/server/index.js";
 import express from "express";
 import { fileURLToPath } from "url"
 import http from "node:http";
+import cors from "cors"
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-import { epoxyPath } from "./node_modules/@mercuryworkshop/epoxy-transport/lib/index";
-//the normal library does not have type definitions, so we're using a fork (mine)
-//i wasn't able to just use @mercuryworkshop/epoxy-transport because for some reason it wasn't looking in the node modules, but was looking through npm or something
-import { libcurlPath } from "@mercuryworkshop/libcurl-transport/";
-import { bareModulePath } from "./node_modules/@mercuryworkshop/bare-as-module3/lib/index"
+import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
+import { libcurlPath } from "@mercuryworkshop/libcurl-transport";
+import { bareModulePath } from "@mercuryworkshop/bare-as-module3"
 import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { meteorPath } from "meteorproxy"
 import wisp from "wisp-server-node";
+import { createBareServer } from "@tomphttp/bare-server-node"
+//wahts the library i forgot
 import net from "node:net"
+import { hostname } from "node:os"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 let updateInProgress = false;
 let updateCompleted = false;
 let rebuildInProgress = false;
 let rebuildCompleted = false;
-
+const bare = createBareServer("/bare/")
 console.log(chalk.blue("Starting Daylight"));
 
-function handleTermination(signal: string) {
+function handleTermination(signal) {
     if (updateInProgress) {
         console.log(chalk.red(`Cannot terminate now. Daylight is currently updating. Termination of the script now will brick Daylight. The only way to fix a "bricking" of Daylight, is to completely download it again, and make a new instance.`));
     } else {
@@ -68,7 +70,7 @@ const img = [
     "img/bg/bgLight.png"
 ];
 
-function checkFiles(files: string[], baseDir: string) {
+function checkFiles(files, baseDir) {
     let allFilesExist = true;
     files.forEach(file => {
         const filePath = path.join(baseDir, file);
@@ -86,7 +88,7 @@ function rebuildAndCheckIntegrity() {
     const spinner = ora("Rebuilding Daylight...").start();
     rebuildInProgress = true;
 
-    const buildProcess = new Promise<void>((resolve, reject) => {
+    const buildProcess = new Promise((resolve, reject) => {
         fs.rm("./dist", { recursive: true, force: true }, (err) => {
             if (err) return reject(err);
             exec("npm run build", (error, stdout, stderr) => {
@@ -214,7 +216,7 @@ function startServer() {
 
     const rammerheadSession = /^\/[a-z0-9]{32}/;
 
-    function shouldRouteRh(req: http.IncomingMessage) {
+    function shouldRouteRh(req) {
         if (!req.url) return false;
         const url = new URL(req.url, 'http://0.0.0.0');
         return (
@@ -223,22 +225,21 @@ function startServer() {
         );
     }
 
-    function routeRhRequest(req: http.IncomingMessage, res: http.ServerResponse) {
+    function routeRhRequest(req, res) {
         rh.emit('request', req, res);
-    }
-
-    function routeRhUpgrade(req: http.IncomingMessage, socket: net.Socket, head: Buffer) {
-        rh.emit('upgrade', req, socket, head);
     }
 
     const __dirname = path.resolve();
     const server = http.createServer();
     const app = express();
-    
+    const PORT = process.env.PORT || 8080;
 
-    app.use("/uv/", express.static(uvPath));
+    app.use(express.static(path.join(__dirname, "dist")));
+    app.use(cors());
+
+    app.use("/@/", express.static(uvPath));
     console.log(chalk.red("Serving Ultraviolet's files.."));
-    app.use("/epoxy", express.static(epoxyPath));
+    app.use("/epoxy/", express.static(epoxyPath));
     console.log(chalk.yellow("Serving Epoxy's files.."));
     app.use("/baremod/", express.static(bareModulePath))
     console.log(chalk.green("Serving Bare's (as module) files.."));
@@ -246,10 +247,98 @@ function startServer() {
     console.log(chalk.blue("Serving Libcurl's files.."));
     app.use("/baremux/", express.static(baremuxPath));
     console.log(chalk.red("Serving Baremux's files.."));
-    app.use("/meteor/", express.static(meteorPath))
+    app.use("/!/", express.static(meteorPath))
     console.log(chalk.blue("Serving Meteor's files.."));
-    app.use(express.static(path.join(__dirname, "dist")));
     console.log(chalk.green("Serving", chalk.yellow("Daylight's"), chalk.green("files")));
     console.log(chalk.green("All necessary files served. Setting up server."))
+
+    app.get("/", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"));
+    });
+
+    server.on("request", (req, res) => {
+        if (bare.shouldRoute(req)) {
+            bare.routeRequest(req, res)
+        } else if (shouldRouteRh(req)) {
+            routeRhRequest(req, res);
+        } else {
+            app(req, res);
+        }
+    });
     
+    server.on("upgrade", (req, socket, head) => {
+        if (bare.shouldRoute(req)) {
+            bare.routeUpgrade(req, socket, head)
+        } else if (shouldRouteRh(req)) {
+            routeRhUpgrade(req, socket, head);
+        } else if (req.url.endsWith("/wisp")) {
+            wisp.routeRequest(
+                req, socket, head);
+            //types!!!
+        } else {
+            socket.destroy();
+        }
+    });
+    //should we run now
+    //i think we just ru
+    server.on("listening", () => {
+        const address = server.address();
+        //okayyyyyyyy!!!!
+        //no its fucked
+        
+        const theme = chalk.hex("#FFECA1");
+        //okay !!
+        //yes that is what im going to do
+        //in the nexct update im lazy
+        const host = chalk.hex("#060270");
+        console.log(chalk.bold(theme(`
+        ██████╗  █████╗ ██╗   ██╗██╗     ██╗ ██████╗ ██╗  ██╗████████╗
+        ██╔══██╗██╔══██╗╚██╗ ██╔╝██║     ██║██╔════╝ ██║  ██║╚══██╔══╝
+        ██║  ██║███████║ ╚████╔╝ ██║     ██║██║  ███╗███████║   ██║   
+        ██║  ██║██╔══██║  ╚██╔╝  ██║     ██║██║   ██║██╔══██║   ██║   
+        ██████╔╝██║  ██║   ██║   ███████╗██║╚██████╔╝██║  ██║   ██║   
+        ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+                                                                      
+        `)));
+        console.log(`  ${chalk.bold(host("Local System:"))}            http://${address.family === "IPv6" ? `[${address.address}]` : address.address}${address.port === 80 ? "" : ":" + chalk.bold(address.port)}`);
+    
+        console.log(`  ${chalk.bold(host("Local System:"))}            http://localhost${address.port === 8080 ? "" : ":" + chalk.bold(address.port)}`);
+    
+        try {
+            console.log(`  ${chalk.bold(host("On Your Network:"))}  http://${hostname()}${address.port === 8080 ? "" : ":" + chalk.bold(address.port)}`);
+        } catch (err) {
+            // can't find LAN interface
+        }
+    
+        if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
+            console.log(`  ${chalk.bold(host("Replit:"))}           https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
+        }
+    
+        if (process.env.HOSTNAME && process.env.GITPOD_WORKSPACE_CLUSTER_HOST) {
+            console.log(`  ${chalk.bold(host("Gitpod:"))}           https://${PORT}-${process.env.HOSTNAME}.${process.env.GITPOD_WORKSPACE_CLUSTER_HOST}`);
+        }
+    
+        if (process.env.CODESPACE_NAME && process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN) {
+            console.log(`  ${chalk.bold(host("Github Codespaces:"))}           https://${process.env.CODESPACE_NAME}-${address.port === 80 ? "" : address.port}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`);
+        }
+        
+    });
+    
+    server.listen({ port: PORT });
+    
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
+    
+    server.setMaxListeners(0);
+    
+    function shutdown() {
+        console.log("SIGTERM signal received: closing HTTP server");
+        server.close(() => {
+            console.log("HTTP server closed");
+            server.close()
+            bare.close()
+            process.exit(1);
+        });
+    }
+
 }

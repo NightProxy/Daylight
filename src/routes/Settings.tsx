@@ -57,6 +57,7 @@ import { toast } from "sonner"
 import localForage from "localforage";
 
 function login() {
+    document.getElementById("fontAwesomeCDN")?.removeAttribute("disabled")
     const isDesktop = false
     const [imgPreviewSrc, setImgPreviewSrc] = useState("")
     const [hintVisibility, setHintVisibility] = useState("none")
@@ -78,32 +79,8 @@ function login() {
         ;
 
     }
-    function check() {
-
-        if (document.getElementById("searchCard")!.style.height == "400px" && window.innerWidth >= 1024) {
-            gen!.style.transition = "margin-top 0.2s ease-out"
-            themec!.style.height = ""
-            document.getElementById("cloakCard")!.style.height = ""
-            gen!.style.marginTop = "157.5px"
-            gen!.style.transition = "all 0.2s ease-out"
-            sea!.style.height = "715px"
-
-
-            gen!.style.width = "205%"
-            gen!.style.marginLeft = "105%"
-
-            setTimeout(function () {
-                document.getElementById('generalCard')!.style.marginTop = "0"
-                $("#accTrigger").removeAttr("disabled")
-
-            }, 200)
-            setTimeout(function () {
-                gen!.style.marginTop = "-315px"
-                gen!.style.transition = "all 0.2s ease-out"
-            }, 200)
-        }
-    }
-    setInterval(check, 100)
+ 
+    
     const capitalizefr = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
     const [accordionDelay, setAccordionDelay] = useState(0)
     const proxyChange = (value: string) => {
@@ -117,10 +94,86 @@ function login() {
         console.log("User has changed their serach engine to: ", value)
         localStorage.setItem("search", value)
     }
+    const themeChange = (value: string) => {
+        console.log("User has changed their theme to: ", value)
+        localStorage.setItem("theme", value)
+        if (document.documentElement.classList.length > 1){
+            if (!document.documentElement.classList.contains("light") || !document.documentElement.classList.contains("dark")){
+                
+            }
+            if (document.documentElement.classList.contains("dark")){
+                document.documentElement.setAttribute("class", `dark ${value}`)
+            } else {
+                if (document.documentElement.classList.contains("light")){
+                    document.documentElement.setAttribute("class", `light ${value}`)
+                }
+            }
+            
+        } else {
+            document.documentElement.classList.add(value)
+        }
+    }
     const transportChange = (value: string) => {
         //add bareMux transport switching
     }
     const [isOpen, setIsOpen] = React.useState(false)
+    
+    const themeList = [
+        {
+            value: "sea",
+            label: "Sea",
+        },
+        {
+            value: "winter",
+            label: "Winter",
+        },
+        {
+            value: "beige",
+            label: "Beige",
+        },
+        {
+            value: "ultrared",
+            label: "UltraRed",
+        },
+        {
+            value: "rose",
+            label: "Rose",
+        },
+        {
+            value: "forest",
+            label: "Forest",
+        },
+        {
+            value: "spring",
+            label: "Spring",
+        },
+        {
+            value: "gold",
+            label: "Gold",
+        },
+        {
+            value: "Horizon",
+            label: "Horizon",
+        },
+        {
+            value: "violet",
+            label: "Violet",
+        },
+        {
+            value: "rednight",
+            label: "Ultrakill Red (Red Night)",
+        },
+        {
+            value: "midnight",
+            label: "Midnight",
+        },
+        {
+            value: "pastel",
+            label: "Pastel",
+        },
+    ];
+    
+
     const transportList = [
         {
             value: "epoxy",
@@ -959,6 +1012,22 @@ function login() {
         })
 
         $(function () {
+            var value = localStorage.getItem("theme")
+            if (document.documentElement.classList.length > 1){
+                if (!document.documentElement.classList.contains("light") || !document.documentElement.classList.contains("dark")){
+                    
+                }
+                if (document.documentElement.classList.contains("dark")){
+                    document.documentElement.setAttribute("class", `dark ${value}`)
+                } else {
+                    if (document.documentElement.classList.contains("light")){
+                        document.documentElement.setAttribute("class", `light ${value}`)
+                    }
+                }
+                
+            } else {
+                document.documentElement.classList.add(value as string)
+            }
             const iconPreview = document.getElementById("iconPreview");
             $("#unroundImages").on("click", function () {
                 if (localStorage.getItem("rounded") !== "true" && iconPreview?.style.borderRadius == "999px") {
@@ -1163,15 +1232,13 @@ function login() {
                         <Card id="themeCard1024" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }} >
                             <CardHeader>
                                 <CardTitle>Themes</CardTitle>
-                                <CardDescription>Customize how Daylight looks. Each theme has a Dark and Light variant customizable from the widget on the top right.</CardDescription>
+                                <CardDescription>Customize how Daylight looks. Each theme has a Dark and Light variant customizable from the widget on the top right. Some themes may only have one variant. Spring only has one variant.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium">Two-Factor Authentication</p>
-                                        <p className="text-muted-foreground text-sm">Add an extra layer of security to your account</p>
-                                    </div>
-                                    <Switch id="two-factor-auth" />
+
+                                    <Combobox list={themeList} placeHolder="theme" placeHolderPlural="themes" defaultValue={undefined} onValueChange={themeChange} />
+
                                 </div>
 
                             </CardContent>

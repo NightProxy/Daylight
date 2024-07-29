@@ -47,6 +47,58 @@ function login() {
       return false;
     }
   }
+  useEffect(() => {
+    if (isDesktop || localStorage.getItem("appearanceMode") == "true") {
+      const lightDiv = document.createElement('div');
+      lightDiv.id = 'light';
+      Object.assign(lightDiv.style, {
+        backgroundImage: 'url("/img/bg/bgLight.png")',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        height: '100%',
+        width: '100%',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 0,
+      });
+
+      const darkDiv = document.createElement('div');
+      darkDiv.id = 'dark';
+      Object.assign(darkDiv.style, {
+        backgroundImage: 'url("/img/bg/bgDark.png")',
+        backgroundPosition: 'center center',
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+        height: '100%',
+        width: '100%',
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 0,
+        opacity: '0',
+      });
+      
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+      document.body.appendChild(lightDiv);
+      document.body.appendChild(darkDiv);
+      document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+      document.body.style.backgroundPosition = 'center center';
+      document.body.style.backgroundSize = 'cover';
+      document.body.style.backgroundRepeat = 'no-repeat';
+      document.body.style.backgroundAttachment = 'fixed';
+      document.body.style.height = '100%';
+      return () => {
+        document.body.removeChild(lightDiv);
+        document.body.removeChild(darkDiv);
+      };
+    }
+  }, [isDesktop]);
   async function setInitialColor() {
     const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
 

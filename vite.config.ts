@@ -2,7 +2,6 @@ import million from "million/compiler";
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
-import { dynamicPath } from "@nebula-services/dynamic";
 // @ts-ignore
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
 // @ts-ignore
@@ -62,7 +61,7 @@ export default defineConfig({
     }
   },
   server: {
-    port: 3000,
+    port: 8080,
     watch: {
       usePolling: true
     },
