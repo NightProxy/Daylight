@@ -392,10 +392,10 @@ function Home() {
         
         <div>
           <ModeToggle></ModeToggle>
-          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/"></Link>
-          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites"></Link>
-          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectAddons" to="/addons"></Link>
-          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectSettings" to="/settings"></Link>
+          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/">Go Home</Link>
+          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites">Go to Favorites</Link>
+          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectAddons" to="/addons">Go to Addons</Link>
+          <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectSettings" to="/settings">Go to Settings</Link>
         </div>
         <Navbar home="true"></Navbar>
         <div className="container3 relative">
@@ -413,6 +413,7 @@ function Home() {
                         variant="ghost"
                         style={{ height: "40px", borderBottomRightRadius: "10px", borderTopRightRadius: "10px" }}
                         className="rounded-full hover:bg-muted"
+                        aria-label="Search"
                       >
                         <Search className="h-5 w-5 text-muted-foreground" />
                       </Button>

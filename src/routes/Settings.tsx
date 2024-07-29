@@ -1101,10 +1101,10 @@ function login() {
                 
                 <div>
                     <ModeToggle></ModeToggle>
-                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/"></Link>
-                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites"></Link>
-                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectAddons" to="/addons"></Link>
-                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectSettings" to="/settings"></Link>
+                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/">Go Home</Link>
+                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites">Go Favorites</Link>
+                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectAddons" to="/addons">Go Addons</Link>
+                    <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectSettings" to="/settings">Go Settings</Link>
                 </div>
                 <Navbar settings="true"></Navbar>
                 <br>
