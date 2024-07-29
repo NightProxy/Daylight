@@ -41,7 +41,6 @@ export default defineConfig({
           dest: "libcurl",
           overwrite: false
         },
-       
       ]
     }),
     million.vite({ auto: true }),
@@ -59,6 +58,22 @@ export default defineConfig({
       ...postcss(),
       apply: 'build',
     },
+    
+    {
+      name: 'add-defer-to-links',
+      enforce: 'post',
+      transformIndexHtml(html: string) {
+        return html.replace(
+          /<link (.*?)>/g,
+          (match: any, attributes: string | string[]) => {
+            if (!attributes.includes('defer') && !attributes.includes('rel="preload"') && !attributes.includes('rel="prefetch"')) {
+              return `<link ${attributes} defer>`;
+            }
+            return match;
+          }
+        );
+      },
+    } as unknown as Plugin,
   ],
   resolve: {
     alias: {

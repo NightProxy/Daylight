@@ -1,4 +1,3 @@
-import 'lucide-static/font/lucide.css';
 import "../routes/Home.css";
 import "../app/globals.css";
 import "../index.css";
