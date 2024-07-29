@@ -10,6 +10,7 @@ import path from "path";
 import react from "@vitejs/plugin-react";
 import { terser } from 'rollup-plugin-terser';
 import { meteorPath } from "meteorproxy"
+import postcss from 'postcss';
 const __dirname = path.resolve();
 
 function isErrorWithCause(log: any): log is { cause: { message: string } } {
@@ -54,6 +55,10 @@ export default defineConfig({
         comments: false,
       },
     }),
+    {
+      ...postcss(),
+      apply: 'build',
+    },
   ],
   resolve: {
     alias: {
