@@ -434,7 +434,7 @@ function Home() {
                 style={{ height: "32px", borderTopRightRadius: "999px", borderBottomRightRadius: "999px", transition: "all 0.2s ease" }} />
             </div>
             <div className="text-container" style={{ background: "transparent", opacity: "0" }}>
-              <h5 className="horizon">The minimalistic browser</h5>
+              <h2 style={{fontSize: "medium"}} className="horizon">The minimalistic browser</h2>
             </div>
           </div>
           <br></br>
