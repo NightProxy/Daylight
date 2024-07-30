@@ -6,6 +6,7 @@ import Settings from "./routes/Settings";
 import Home from "./routes/Home"
 import Favorites from "./routes/Favorites"
 import Addons from "./routes/Addons"
+import ErrorBoundary from "./routes/ErrorBoundary";
 export default function App() {
   const location = useLocation();
   const isPresent = useIsPresent();
@@ -36,7 +37,10 @@ export default function App() {
   return (
     <AnimatePresence mode="wait" initial={false}>
       <motion.div key={location.pathname}>
+        <ErrorBoundary>
         {element}
+        </ErrorBoundary>
+        
         <motion.div
         initial={{ scaleX: 1 }}
         animate={{ scaleX: 0, transition: { duration: 0.5, ease: "circOut" } }}

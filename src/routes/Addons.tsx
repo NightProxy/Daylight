@@ -28,8 +28,9 @@ import { Navbar } from "@/components/component/navbar"
 import 'overlayscrollbars/overlayscrollbars.css';
 import { OverlayScrollbars } from 'overlayscrollbars';
 import localForage from "localforage"
+import { useMediaQuery } from "@/hooks/use-media-query"
 function login() {
-  const isDesktop = false
+  const isDesktop = useMediaQuery("(min-width: 768px)")
   const { theme } = useTheme();
     const icon = document.getElementById("favicon")
   var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
@@ -40,10 +41,10 @@ function login() {
 
   });
   useEffect(() => {
-    if (isDesktop || localStorage.getItem("appearanceMode") == "true") {
-      const lightDiv = document.createElement('div');
-      lightDiv.id = 'light';
-      Object.assign(lightDiv.style, {
+    if (isDesktop && localStorage.getItem('appearanceMode') == "true") {
+      const light = document.createElement('div');
+      light.id = 'light';
+      Object.assign(light.style, {
         backgroundImage: 'url("/img/bg/bgLight.png")',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
@@ -57,10 +58,9 @@ function login() {
         transform: 'translate(-50%, -50%)',
         zIndex: 0,
       });
-
-      const darkDiv = document.createElement('div');
-      darkDiv.id = 'dark';
-      Object.assign(darkDiv.style, {
+      const dark = document.createElement('div');
+      dark.id = 'dark';
+      Object.assign(dark.style, {
         backgroundImage: 'url("/img/bg/bgDark.png")',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
@@ -75,10 +75,26 @@ function login() {
         zIndex: 0,
         opacity: '0',
       });
+
+      if (!document.documentElement.classList.contains("light")){
+        light.classList.add("opacity-0")
+        dark.classList.remove("opacity-0")
+      }
       
+      
+      if (!document.documentElement.classList.contains("dark")){
+        dark.classList.add("opacity-0")
+        light.classList.remove("opacity-0")
+      }
+
       const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-      document.body.appendChild(lightDiv);
-      document.body.appendChild(darkDiv);
+      const modetlink = document.getElementById("bgs");
+      if (modetlink) {
+        modetlink?.appendChild(light);
+        modetlink?.appendChild(dark);
+        setInitialColor()
+      }
+
       document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
       document.body.style.backgroundPosition = 'center center';
       document.body.style.backgroundSize = 'cover';
@@ -86,9 +102,15 @@ function login() {
       document.body.style.backgroundAttachment = 'fixed';
       document.body.style.height = '100%';
       return () => {
-        document.body.removeChild(lightDiv);
-        document.body.removeChild(darkDiv);
+        modetlink?.removeChild(light);
+        modetlink?.removeChild(dark);
       };
+    } else {
+      if (document.getElementById("light") && document.getElementById("dark")){
+        const modetlink = document.getElementById("bgs");
+        modetlink?.removeChild(document.getElementById("light") as HTMLDivElement)
+        modetlink?.removeChild(document.getElementById("dark") as HTMLDivElement)
+      }
     }
   }, [isDesktop]);
   function isValidUrl(string) {
@@ -100,68 +122,68 @@ function login() {
     }
   }
   async function setInitialColor() {
-    if (isDesktop) {
-        const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+    if (document.getElementById("light") && document.getElementById("dark")) {
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
 
 
-        const box = document.getElementById("searchBox")
-        var themeEl = document.getElementById(themeClass as string)
-        if (themeClass == "dark") {
-            var themeOpp = document.getElementById("light")
-            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
-        } else {
-            var themeOpp = document.getElementById("dark")
-            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+      const box = document.getElementById("searchBox")
+      var themeEl = document.getElementById(themeClass as string)
+      if (themeClass == "dark") {
+        var themeOpp = document.getElementById("light")
+        osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+      } else {
+        var themeOpp = document.getElementById("dark")
+        osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+      }
+      if (themeEl?.classList.contains("opacity-0")) {
+        themeOpp?.classList.add("opacity-0")
+        themeEl.classList.remove("opacity-0")
+      }
+
+
+
+      Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
+        element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+        element.style.backgroundPosition = 'center center';
+        element.style.backgroundSize = 'cover';
+        element.style.backgroundRepeat = 'no-repeat';
+        element.style.backgroundAttachment = 'fixed';
+        element.style.height = '100%';
+      });
+
+      if (localStorage.getItem("customCloak")) {
+        if (localStorage.getItem('customCloak') == "active") {
+          document.title = await localForage.getItem("customCloakTitle") as string
+          var favIcon = document.getElementById('favicon') as HTMLLinkElement
+          favIcon.href = await localForage.getItem("customCloakImg") as string
         }
-        if (themeEl?.classList.contains("opacity-0")) {
-            themeOpp?.classList.add("opacity-0")
-            themeEl.classList.remove("opacity-0")
-        }
-
-
-
-        Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
-            element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-            element.style.backgroundPosition = 'center center';
-            element.style.backgroundSize = 'cover';
-            element.style.backgroundRepeat = 'no-repeat';
-            element.style.backgroundAttachment = 'fixed';
-            element.style.height = '100%';
-        });
-
-        if (localStorage.getItem("customCloak")) {
-            if (localStorage.getItem('customCloak') == "active") {
-                document.title = await localForage.getItem("customCloakTitle") as string
-                var favIcon = document.getElementById('favicon') as HTMLLinkElement
-                favIcon.href = await localForage.getItem("customCloakImg") as string
-            }
-        }
-        if (!localStorage.getItem("cloak")) {
-            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
-        }
+      }
+      if (!localStorage.getItem("cloak")) {
+        icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+      }
     } else {
-        const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-        if (themeClass == "dark") {
+      const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+      if (themeClass == "dark") {
 
-            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
-        } else {
+        osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+      } else {
 
-            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+        osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+      }
+      if (localStorage.getItem("customCloak")) {
+        if (localStorage.getItem('customCloak') == "active") {
+          document.title = await localForage.getItem("customCloakTitle") as string
+          var favIcon = document.getElementById('favicon') as HTMLLinkElement
+          favIcon.href = await localForage.getItem("customCloakImg") as string
         }
-        if (localStorage.getItem("customCloak")) {
-            if (localStorage.getItem('customCloak') == "active") {
-                document.title = await localForage.getItem("customCloakTitle") as string
-                var favIcon = document.getElementById('favicon') as HTMLLinkElement
-                favIcon.href = await localForage.getItem("customCloakImg") as string
-            }
-        }
-        if (!localStorage.getItem("cloak")) {
-            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
-        }
+      }
+      if (!localStorage.getItem("cloak")) {
+        icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+      }
     }
 
 
-}
+  }
 useEffect(() => {
 
 
@@ -319,7 +341,9 @@ function handleClassAttributeChanges(
         <>
 
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-                <div>
+              <div id="bgs">
+              </div>
+                <div id="modetlink">
                     <ModeToggle></ModeToggle>
                     <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/"></Link>
           <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites"></Link>
@@ -338,7 +362,7 @@ function handleClassAttributeChanges(
                     </CardContent>
                 </Card>
                 
-                {isDesktop && (
+                {isDesktop && localStorage.getItem("clockEnabled") && (
       <div className="wrapper">
         <div className="clock-container">
           <div className="clock">

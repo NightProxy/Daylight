@@ -1,8 +1,8 @@
 /* eslint-disable no-non-null-assertion */
 //heyyy!!!
 
-import { useEffect, Suspense } from "react";
-
+import { useEffect, Suspense, useState } from "react";
+import Clock from "@/components/component/clock"
 import "../routes/Home.css";
 import { Button } from "@/components/ui/pill-button";
 import "../app/globals.css";
@@ -47,10 +47,13 @@ import { Link } from "react-router-dom";
 import 'overlayscrollbars/overlayscrollbars.css';
 import localForage from "localforage"
 import { OverlayScrollbars } from 'overlayscrollbars';
+import { useMediaQuery } from "@/hooks/use-media-query"
 
-// yes i use dotLottie for animations u have a problem lmao
 function Home() {
-  const isDesktop = false
+  const isDesktop = useMediaQuery("(min-width: 768px)")
+  
+  
+
   var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
   const osInstance = OverlayScrollbars(document.body, {
     scrollbars: {
@@ -59,10 +62,10 @@ function Home() {
 
   });
   useEffect(() => {
-    if (isDesktop || localStorage.getItem('appearanceMode') == "true") {
-      const lightDiv = document.createElement('div');
-      lightDiv.id = 'light';
-      Object.assign(lightDiv.style, {
+    if (isDesktop && localStorage.getItem('appearanceMode') == "true") {
+      const light = document.createElement('div');
+      light.id = 'light';
+      Object.assign(light.style, {
         backgroundImage: 'url("/img/bg/bgLight.png")',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
@@ -76,10 +79,9 @@ function Home() {
         transform: 'translate(-50%, -50%)',
         zIndex: 0,
       });
-
-      const darkDiv = document.createElement('div');
-      darkDiv.id = 'dark';
-      Object.assign(darkDiv.style, {
+      const dark = document.createElement('div');
+      dark.id = 'dark';
+      Object.assign(dark.style, {
         backgroundImage: 'url("/img/bg/bgDark.png")',
         backgroundPosition: 'center center',
         backgroundSize: 'cover',
@@ -95,9 +97,25 @@ function Home() {
         opacity: '0',
       });
 
+      if (!document.documentElement.classList.contains("light")) {
+        light.classList.add("opacity-0")
+        dark.classList.remove("opacity-0")
+      }
+
+
+      if (!document.documentElement.classList.contains("dark")) {
+        dark.classList.add("opacity-0")
+        light.classList.remove("opacity-0")
+      }
+
       const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-      document.body.appendChild(lightDiv);
-      document.body.appendChild(darkDiv);
+      const modetlink = document.getElementById("bgs");
+      if (modetlink) {
+        modetlink?.appendChild(light);
+        modetlink?.appendChild(dark);
+        setInitialColor()
+      }
+
       document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
       document.body.style.backgroundPosition = 'center center';
       document.body.style.backgroundSize = 'cover';
@@ -105,9 +123,18 @@ function Home() {
       document.body.style.backgroundAttachment = 'fixed';
       document.body.style.height = '100%';
       return () => {
-        document.body.removeChild(lightDiv);
-        document.body.removeChild(darkDiv);
+        if (document.getElementById("light") && document.getElementById("dark")){
+          modetlink?.removeChild(light);
+          modetlink?.removeChild(dark);
+        }
+        
       };
+    } else {
+      if (document.getElementById("light") && document.getElementById("dark")) {
+        const modetlink = document.getElementById("bgs");
+        modetlink?.removeChild(document.getElementById("light") as HTMLDivElement)
+        modetlink?.removeChild(document.getElementById("dark") as HTMLDivElement)
+      }
     }
   }, [isDesktop]);
   function isValidUrl(string) {
@@ -118,47 +145,7 @@ function Home() {
       return false;
     }
   }
-  useEffect(() => {
-    Array.from(document.getElementsByClassName('os-scrollbar') as HTMLCollectionOf<HTMLElement>).forEach(element => {
-      element.style.transition = ''
-      element.style.opacity = ""
-
-    });
-    const secondHand = document.querySelector('.clock-times__second') as HTMLDivElement;
-    const minsHand = document.querySelector('.clock-times__minute') as HTMLDivElement;
-    const hourHand = document.querySelector('.clock-times__hour') as HTMLDivElement;
-
-    function setDate() {
-      const now = new Date();
-
-      const seconds = now.getSeconds();
-      const secondsDegrees = 6 * seconds;
-      if (secondHand) {
-        if (secondsDegrees === 0) {
-          secondHand.setAttribute("style", `transition: all 0s ease; transform: rotate(${secondsDegrees}deg)`);
-        } else {
-          secondHand.setAttribute("style", `transition: transform 0.3s ease; transform: rotate(${secondsDegrees}deg)`);
-        }
-      }
-
-      const mins = now.getMinutes();
-      const minsDegrees = 6 * mins;
-      if (minsHand) {
-        minsHand.style.transform = `rotate(${minsDegrees}deg)`;
-      }
-
-      const hour = now.getHours() % 12;
-      const hourDegrees = 30 * hour + mins / 2;
-      if (hourHand) {
-        hourHand.style.transform = `rotate(${hourDegrees}deg)`;
-      }
-    }
-
-    const intervalId = setInterval(setDate, 1000);
-    setDate();
-
-    return () => clearInterval(intervalId);
-  }, []);
+  
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -173,7 +160,7 @@ function Home() {
   const { theme } = useTheme();
   const icon = document.getElementById("favicon")
   async function setInitialColor() {
-    if (isDesktop) {
+    if (document.getElementById("light") && document.getElementById("dark")) {
       const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
 
 
@@ -362,8 +349,10 @@ function Home() {
     <>
       <Suspense fallback={<div className="text-center justify-center items-center flex">Loading Daylight Systems Incorporated..</div>}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+          <div id="bgs">
 
-          <div>
+          </div>
+          <div id="modetlink">
             <ModeToggle></ModeToggle>
             <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/">Go Home</Link>
             <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites">Go to Favorites</Link>
@@ -421,40 +410,8 @@ function Home() {
 
 
 
-          {isDesktop && (
-            <div className="wrapper">
-              <div className="clock-container">
-                <div className="clock">
-                  <div className="clock-circles">
-                    <div className="clock-circles__item"></div>
-                    <div className="clock-circles__item"></div>
-                    <div className="clock-circles__item"></div>
-                    <div className="clock-circles__item"></div>
-                  </div>
-                  <div className="clock-indicators">
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                    <div className="clock-indicators__item"></div>
-                  </div>
-                  <div className="clock-times">
-                    <div className="clock-times__second"></div>
-                    <div className="clock-times__minute"></div>
-                    <div className="clock-times__hour"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
+          <Clock isDesktop={isDesktop} />
           <Dialog >
             <DialogTrigger asChild>
               <Button variant="outline" style={{ right: "10px", position: "fixed", bottom: "10px" }}>Why the lack of time?</Button>

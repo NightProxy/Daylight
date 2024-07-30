@@ -715,7 +715,7 @@ h1 {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: hsla(var(--background));
+  background-color: hsla(var(--border));
   z-index: 10000;
 }
 

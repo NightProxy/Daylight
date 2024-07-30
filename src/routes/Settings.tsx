@@ -23,6 +23,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+
 import { motion, useIsPresent, useSpring, useScroll } from "framer-motion";
 import $ from "jquery"
 import { Switch } from "@/components/ui/switch"
@@ -55,15 +56,84 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Toaster } from "@/components/ui/sonner"
 import { toast } from "sonner"
 import localForage from "localforage";
-
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+import { useMediaQuery } from "@/hooks/use-media-query"
 function login() {
+    $(function(){
+        if (localStorage.getItem("appearanceMode")){
+            const light = document.createElement('div');
+                light.id = 'light';
+                Object.assign(light.style, {
+                    backgroundImage: 'url("/img/bg/bgLight.png")',
+                    backgroundPosition: 'center center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    height: '100%',
+                    width: '100%',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 0,
+                });
+                const dark = document.createElement('div');
+                dark.id = 'dark';
+                Object.assign(dark.style, {
+                    backgroundImage: 'url("/img/bg/bgDark.png")',
+                    backgroundPosition: 'center center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    height: '100%',
+                    width: '100%',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 0,
+                    opacity: '0',
+                });
+
+                if (!document.documentElement.classList.contains("light")) {
+                    light.classList.add("opacity-0")
+                    dark.classList.remove("opacity-0")
+                }
+
+
+                if (!document.documentElement.classList.contains("dark")) {
+                    dark.classList.add("opacity-0")
+                    light.classList.remove("opacity-0")
+                }
+
+                const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+                const modetlink = document.getElementById("bgs");
+                if (modetlink) {
+                    modetlink?.appendChild(light);
+                    modetlink?.appendChild(dark);
+                    setInitialColor()
+                }
+
+                document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+                document.body.style.backgroundPosition = 'center center';
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundRepeat = 'no-repeat';
+                document.body.style.backgroundAttachment = 'fixed';
+                document.body.style.height = '100%'
+                setTimeout(function(){
+                    console.log("done!")
+                }, 350)
+        }
+    })
+    const clockRef = useRef<ComboboxRef>(null)
     const proxyRef = useRef<ComboboxRef>(null)
     const transportRef = useRef<ComboboxRef>(null)
     const themeRef = useRef<ComboboxRef>(null)
     const themeRef1024 = useRef<ComboboxRef>(null)
     const searchRef = useRef<ComboboxRef>(null)
+    const browserRef = useRef<ComboboxRef>(null)
     document.getElementById("fontAwesomeCDN")?.removeAttribute("disabled")
-    const isDesktop = false
+    const isDesktop = useMediaQuery("(min-width: 768px)")
     const [imgPreviewSrc, setImgPreviewSrc] = useState("")
     const [hintVisibility, setHintVisibility] = useState("none")
     var ct = document.getElementById("cloakTitle")
@@ -85,7 +155,30 @@ function login() {
 
     }
 
+    $(function () {
+        if (localStorage.getItem("appearanceMode")) {
+            document.getElementById("appearanceMode")?.click()
+            if ($("#appearanceMode").attr("data-state") == 'checked') {
+                document.getElementById("appearanceMode")?.click()
+                localStorage.setItem("appearanceMode", "true")
 
+            }
+        }
+        if (localStorage.getItem("clockEnabled")) {
+            document.getElementById("clock")?.click()
+            if ($("#clock").attr("data-state") == 'checked') {
+                document.getElementById("clock")?.click()
+                localStorage.setItem("clockEnabled", "true")
+            }
+        }
+        if (localStorage.getItem("clock")) {
+            clockRef.current?.setValue(localStorage.getItem("clock") as string)
+        }
+        if (localStorage.getItem("browseType")) {
+            browserRef.current?.setValue(localStorage.getItem("browseType") as string)
+        }
+
+    })
     const capitalizefr = <T extends string>(s: T) => (s[0].toUpperCase() + s.slice(1)) as Capitalize<typeof s>;
     const proxyChange = (value: string | null) => {
         console.log("gyatt", value)
@@ -99,34 +192,67 @@ function login() {
         console.log("User has changed their serach engine to: ", value)
         localStorage.setItem("search", value as string)
     }
-  
-    const themeChange = (value: string | null) => {
-        console.log("User has changed their theme to: ", value)
-        localStorage.setItem("theme", value as string)
-        
-
-        if (document.documentElement.classList.length > 1) {
-            if (!document.documentElement.classList.contains("light") || !document.documentElement.classList.contains("dark")) {
-
-            }
-            if (document.documentElement.classList.contains("dark")) {
-                document.documentElement.setAttribute("class", `dark ${value}`)
-            } else {
-                if (document.documentElement.classList.contains("light")) {
-                    document.documentElement.setAttribute("class", `light ${value}`)
-                }
-            }
-
-        } else {
-            document.documentElement.classList.add(value as string)
-        }
+    const clockChange = (value: string | null) => {
+        console.log("User has changed their clock to: ", value)
+        localStorage.setItem("clock", value as string)
     }
+    const browserChange = (value: string | null) => {
+        console.log("User has changed their browsing type to: ", value)
+        localStorage.setItem("browseType", value as string)
+    }
+
+    const themeChange = (value: string | null) => {
+        if (!value) {
+
+            return;
+        }
+
+        console.log("User has changed their theme to: ", value);
+        localStorage.setItem("theme", value);
+
+        const htmlClassList = document.documentElement.classList;
+
+        if (htmlClassList.length > 1) {
+            if (htmlClassList.contains("dark")) {
+                document.documentElement.setAttribute("class", `dark ${value}`);
+            } else if (htmlClassList.contains("light")) {
+                document.documentElement.setAttribute("class", `light ${value}`);
+            }
+        } else {
+            htmlClassList.add(value);
+        }
+    };
+
     const transportChange = (value: string | null) => {
         //add bareMux transport switching
         localStorage.setItem("transport", value as string)
     }
     const [isOpen, setIsOpen] = React.useState(false)
+    const browserList = [
+        {
+            value: "normal",
+            label: "Normal",
 
+        },
+        {
+            value: "fullscreen",
+            label: "Fullscreen"
+        }
+    ]
+    const clockList = [
+        {
+            value: "analog",
+            label: "Analog"
+        },
+        {
+            value: "digital12",
+            label: "Digital (12 hour)"
+        },
+        {
+            value: "digital24",
+            label: "Digital (24 hours)"
+        }
+    ]
     const themeList = [
         {
             value: "sea",
@@ -254,58 +380,81 @@ function login() {
             return false;
         }
     }
+    
     useEffect(() => {
-        if (isDesktop) {
-            const lightDiv = document.createElement('div');
-            lightDiv.id = 'light';
-            Object.assign(lightDiv.style, {
-                backgroundImage: 'url("/img/bg/bgLight.png")',
-                backgroundPosition: 'center center',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundAttachment: 'fixed',
-                height: '100%',
-                width: '100%',
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 0,
-            });
-
-            const darkDiv = document.createElement('div');
-            darkDiv.id = 'dark';
-            Object.assign(darkDiv.style, {
-                backgroundImage: 'url("/img/bg/bgDark.png")',
-                backgroundPosition: 'center center',
-                backgroundSize: 'cover',
-                backgroundRepeat: 'no-repeat',
-                backgroundAttachment: 'fixed',
-                height: '100%',
-                width: '100%',
-                position: 'fixed',
-                top: '50%',
-                left: '50%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 0,
-                opacity: '0',
-            });
-
-            const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
-            document.body.appendChild(lightDiv);
-            document.body.appendChild(darkDiv);
-            document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-            document.body.style.backgroundPosition = 'center center';
-            document.body.style.backgroundSize = 'cover';
-            document.body.style.backgroundRepeat = 'no-repeat';
-            document.body.style.backgroundAttachment = 'fixed';
-            document.body.style.height = '100%';
-            return () => {
-                document.body.removeChild(lightDiv);
-                document.body.removeChild(darkDiv);
-            };
+        if (isDesktop && localStorage.getItem('appearanceMode') == "true") {
+          const light = document.createElement('div');
+          light.id = 'light';
+          Object.assign(light.style, {
+            backgroundImage: 'url("/img/bg/bgLight.png")',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            height: '100%',
+            width: '100%',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 0,
+          });
+          const dark = document.createElement('div');
+          dark.id = 'dark';
+          Object.assign(dark.style, {
+            backgroundImage: 'url("/img/bg/bgDark.png")',
+            backgroundPosition: 'center center',
+            backgroundSize: 'cover',
+            backgroundRepeat: 'no-repeat',
+            backgroundAttachment: 'fixed',
+            height: '100%',
+            width: '100%',
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 0,
+            opacity: '0',
+          });
+    
+          if (!document.documentElement.classList.contains("light")) {
+            light.classList.add("opacity-0")
+            dark.classList.remove("opacity-0")
+          }
+    
+    
+          if (!document.documentElement.classList.contains("dark")) {
+            dark.classList.add("opacity-0")
+            light.classList.remove("opacity-0")
+          }
+    
+          const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+          const modetlink = document.getElementById("bgs");
+          if (modetlink) {
+            modetlink?.appendChild(light);
+            modetlink?.appendChild(dark);
+            setInitialColor()
+          }
+    
+          document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+          document.body.style.backgroundPosition = 'center center';
+          document.body.style.backgroundSize = 'cover';
+          document.body.style.backgroundRepeat = 'no-repeat';
+          document.body.style.backgroundAttachment = 'fixed';
+          document.body.style.height = '100%';
+          return () => {
+            
+            
+          };
+        } else {
+          if (document.getElementById("light") && document.getElementById("dark")) {
+            const modetlink = document.getElementById("bgs");
+            modetlink?.removeChild(document.getElementById("light") as HTMLDivElement)
+            modetlink?.removeChild(document.getElementById("dark") as HTMLDivElement)
+            console.log("child is now removed")
+          }
         }
-    }, [isDesktop]);
+      }, [isDesktop]);
     useEffect(() => {
         if (!localStorage.getItem("search")) {
             localStorage.setItem("search", "google")
@@ -452,7 +601,7 @@ function login() {
     const { theme } = useTheme();
     const icon = document.getElementById("favicon")
     async function setInitialColor() {
-        if (isDesktop) {
+        if (document.getElementById("light") && document.getElementById("dark")) {
             const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
 
 
@@ -628,33 +777,33 @@ function login() {
                     document.title = await localForage.getItem("customCloakTitle") as string
                     var favIcon = document.getElementById("favicon") as HTMLLinkElement
                     favIcon.href = await localForage.getItem("customCloakImg") as string
-                    if (!localStorage.getItem('successToast')){
+                    if (!localStorage.getItem('successToast')) {
                         toast.success("Your cloak has been applied and saved!")
                         localStorage.setItem("successToast", "eeee")
-                        setTimeout(function(){
+                        setTimeout(function () {
                             localStorage.removeItem('successToast')
                         }, 350)
                     }
-                    
+
                 } else {
-                    if (!localStorage.getItem("toastRan2")){
+                    if (!localStorage.getItem("toastRan2")) {
                         toast.error("Please make sure that you upload an icon before you save the cloak.")
                         localStorage.setItem("toastRan2", "yes he did indeed run")
-                        setTimeout(function(){
+                        setTimeout(function () {
                             localStorage.removeItem("toastRan2")
                         }, 350)
                     }
 
                     else {
                         if (!(document.getElementById("customCloakTitleInput") as HTMLInputElement)?.value || (document.getElementById("customCloakTitleInput") as HTMLInputElement)?.value == "" || !await localForage.getItem("customCloakTitle") || await localForage.getItem("customCloakTitle") == "") {
-                            if (!localStorage.getItem("toastRan")){
+                            if (!localStorage.getItem("toastRan")) {
                                 toast.error("Please make sure that your cloak has a title before you save the cloak.")
                                 localStorage.setItem("toastRan", "yes he ran all the way to space")
-                                setTimeout(function(){
+                                setTimeout(function () {
                                     localStorage.removeItem("toastRan")
                                 }, 350)
                             }
-                            
+
                         }
                     }
 
@@ -662,26 +811,26 @@ function login() {
                 }
             } else {
                 if (!await localForage.getItem("customCloakImg")) {
-                    if (!localStorage.getItem("toastRan2")){
+                    if (!localStorage.getItem("toastRan2")) {
                         toast.error("Please make sure that you upload an icon before you save the cloak.")
                         localStorage.setItem("toastRan2", "yes he did indeed run")
-                        setTimeout(function(){
+                        setTimeout(function () {
                             localStorage.removeItem("toastRan2")
                         }, 350)
                     }
-                    
+
                 }
 
                 else {
                     if (!(document.getElementById("customCloakTitleInput") as HTMLInputElement)?.value || (document.getElementById("customCloakTitleInput") as HTMLInputElement)?.value == "" || !await localForage.getItem("customCloakTitle") || await localForage.getItem("customCloakTitle") == "") {
-                        if (!localStorage.getItem("toastRan")){
+                        if (!localStorage.getItem("toastRan")) {
                             toast.error("Please make sure that your cloak has a title before you save the cloak.")
                             localStorage.setItem("toastRan", "yes he ran all the way to space")
-                            setTimeout(function(){
+                            setTimeout(function () {
                                 localStorage.removeItem("toastRan")
                             }, 350)
                         }
-                        
+
                     }
                 }
             }
@@ -834,11 +983,92 @@ function login() {
         })
 
 
-        $("#test").on('click', function () {
-            if (searchRef.current) {
-                searchRef.current?.setValue("ddg")
+        $("#appearanceMode").on("click", function () {
+            if ($("#appearanceMode").attr("data-state") !== "checked") {
+                localStorage.setItem("appearanceMode", "true")
+                const light = document.createElement('div');
+                light.id = 'light';
+                Object.assign(light.style, {
+                    backgroundImage: 'url("/img/bg/bgLight.png")',
+                    backgroundPosition: 'center center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    height: '100%',
+                    width: '100%',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 0,
+                });
+                const dark = document.createElement('div');
+                dark.id = 'dark';
+                Object.assign(dark.style, {
+                    backgroundImage: 'url("/img/bg/bgDark.png")',
+                    backgroundPosition: 'center center',
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    height: '100%',
+                    width: '100%',
+                    position: 'fixed',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: 0,
+                    opacity: '0',
+                });
+
+                if (!document.documentElement.classList.contains("light")) {
+                    light.classList.add("opacity-0")
+                    dark.classList.remove("opacity-0")
+                }
+
+
+                if (!document.documentElement.classList.contains("dark")) {
+                    dark.classList.add("opacity-0")
+                    light.classList.remove("opacity-0")
+                }
+
+                const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+                const modetlink = document.getElementById("bgs");
+                if (modetlink) {
+                    modetlink?.appendChild(light);
+                    modetlink?.appendChild(dark);
+                    setInitialColor()
+                }
+
+                document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+                document.body.style.backgroundPosition = 'center center';
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundRepeat = 'no-repeat';
+                document.body.style.backgroundAttachment = 'fixed';
+                document.body.style.height = '100%';
+
+
+            } else {
+                if (document.getElementById("appearanceMode")?.getAttribute("aria-checked") === "true"){
+                    console.log("skibidi mandai")
+                } else {
+                    localStorage.removeItem("appearanceMode")
+                localStorage.removeItem("appearanceMode")
+                const bgs = document.getElementById("bgs")
+                console.log("skibidi toilet")
+                $("#dark").remove()
+                $("#light").remove()
+                document.body.removeAttribute("style")
+                }
+                
             }
 
+        })
+        $("#clock").on("click", function () {
+            if ($("#clock").attr("data-state") !== "checked") {
+                localStorage.setItem("clockEnabled", "true")
+            } else {
+                localStorage.removeItem("clockEnabled")
+            }
         })
         $(document).ready(function () {
             function setCloak(cloak, title, description, element) {
@@ -1097,9 +1327,9 @@ function login() {
             }
 
         })
-        $(function(){
-         themeRef.current?.setValue(localStorage.getItem("theme") as string)
-         themeRef1024.current?.setValue(localStorage.getItem("theme") as string)   
+        $(function () {
+            themeRef.current?.setValue(localStorage.getItem("theme") as string)
+            themeRef1024.current?.setValue(localStorage.getItem("theme") as string)
         })
         $(function () {
             var value = localStorage.getItem("theme")
@@ -1116,7 +1346,10 @@ function login() {
                 }
 
             } else {
-                document.documentElement.classList.add(value as string)
+                if (value) {
+                    document.documentElement.classList.add(value as string)
+                }
+
             }
             const iconPreview = document.getElementById("iconPreview");
             $("#unroundImages").on("click", function () {
@@ -1189,8 +1422,10 @@ function login() {
         <>
 
             <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <div id="bgs">
 
-                <div>
+                </div>
+                <div id="modetlink">
                     <ModeToggle></ModeToggle>
                     <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectHome" to="/">Go Home</Link>
                     <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectFav" to="/favorites">Go Favorites</Link>
@@ -1328,7 +1563,7 @@ function login() {
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
 
-                                    <Combobox list={themeList} placeHolder="theme" placeHolderPlural="themes" defaultValue={null} ref={themeRef1024} onValueChange={themeChange}/>
+                                    <Combobox list={themeList} placeHolder="theme" placeHolderPlural="themes" defaultValue={null} ref={themeRef1024} onValueChange={themeChange} />
 
                                 </div>
 
@@ -1343,28 +1578,55 @@ function login() {
                                 <CardDescription>Manage general settings here.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium">Light Theme</p>
-                                        <p className="text-muted-foreground text-sm">Use a light background with dark text</p>
+                                <ScrollArea className="h-[150px] w-full rounded-md border p-4">
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="font-medium">Appearance Mode</p>
+
+
+                                            <p className="text-muted-foreground text-sm">Want Daylight to look its best? Turn this on. (Note that this settings does affect performance and is the reason why it is not on by default)</p>
+                                        </div>
+
+                                        <Switch id="appearanceMode" />
                                     </div>
-                                    <RadioGroup id="theme" defaultValue="light" className="flex items-center gap-2">
-                                        <RadioGroupItem id="theme-light" value="light" />
-                                    </RadioGroup>
-                                </div>
-                                <div className="flex items-center justify-between">
-                                    <div>
-                                        <p className="font-medium">Dark Theme</p>
-                                        <p className="text-muted-foreground text-sm">Use a dark background with light text</p>
+                                    <br />
+                                    <Separator orientation="horizontal" className="w-full" />
+                                    <br />
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="font-medium">Clock</p>
+                                            <p className="text-muted-foreground text-sm">This feature is enabled by default, however if you want the most performance, you may turn this off.</p>
+                                        </div>
+                                        <Switch id="clock" />
                                     </div>
-                                    <RadioGroup id="theme" defaultValue="light" className="flex items-center gap-2">
-                                        <RadioGroupItem id="theme-dark" value="dark" />
-                                    </RadioGroup>
-                                </div>
+                                    <br />
+                                    <Separator orientation="horizontal" className="w-full" />
+                                    <br />
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="font-medium">Clock Format</p>
+                                            <p className="text-muted-foreground text-sm">Don't know how to read a clock, or just don't want to? Switch the clock type to digital.</p>
+                                        </div>
+                                        <Combobox ref={clockRef} list={clockList} placeHolder="clock" placeHolderPlural="clocks" defaultValue={"analog"} onValueChange={clockChange} />
+                                    </div>
+                                    <br />
+                                    <Separator orientation="horizontal" className="w-full" />
+                                    <br />
+
+                                    <div className="flex items-center justify-between">
+                                        <div>
+                                            <p className="font-medium">Browser Style</p>
+                                            <p className="text-muted-foreground text-sm">Daylight offers a fullscreen browsing mode without browser features, with the URL bar accessible by hovering over the top left corner. In normal mode, a sidebar (inspired by Arc Browser) provides all page controls, accessible via the same way.</p>
+                                        </div>
+                                        <Combobox ref={browserRef} list={browserList} placeHolder="style" placeHolderPlural="styles" defaultValue={"normal"} onValueChange={browserChange} />
+                                    </div>
+                                    <br />
+                                    <Separator orientation="horizontal" className="w-full" />
+                                    <br />
+
+                                </ScrollArea>
                             </CardContent>
-                            <CardFooter>
-                                <Button>Save Theme</Button>
-                            </CardFooter>
+
                         </Card>
                         <Card id="themeCard" style={{ background: "hsla(var(--card) / 0.4)", backdropFilter: "blur(10px)" }} className="theme">
                             <CardHeader>
@@ -1373,14 +1635,12 @@ function login() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between">
-                                    
-                                <Combobox ref={themeRef} list={themeList} placeHolder="theme" placeHolderPlural="themes" defaultValue={null} onValueChange={themeChange} />
+
+                                    <Combobox ref={themeRef} list={themeList} placeHolder="theme" placeHolderPlural="themes" defaultValue={null} onValueChange={themeChange} />
                                 </div>
 
                             </CardContent>
-                            <CardFooter>
-                                <Button>Update Security</Button>
-                            </CardFooter>
+
                         </Card>
                     </div>
                 </div>
