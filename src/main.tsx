@@ -10,7 +10,6 @@ import React from 'react';
 
 $(function () {
   $("#operaUserStyle").remove();
-  //override any web modding extensions they may have (specifically opera)
 });
 
 function AppWithUI() {
@@ -26,4 +25,3 @@ function AppWithUI() {
 const rootElement = document.getElementById("root");
 const root = ReactDOMClient.createRoot(rootElement as Element);
 root.render(<AppWithUI />);
-

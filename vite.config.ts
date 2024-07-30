@@ -1,6 +1,8 @@
-import million from "million/compiler";
+
 import { defineConfig } from "vite";
 import { viteStaticCopy } from "vite-plugin-static-copy";
+// @ts-ignore
+import { baremuxPath } from '@mercuryworkshop/bare-mux/node'
 import { uvPath } from "@titaniumnetwork-dev/ultraviolet";
 // @ts-ignore
 import { epoxyPath } from "@mercuryworkshop/epoxy-transport";
@@ -23,7 +25,7 @@ export default defineConfig({
       targets: [
         {
           src: `${uvPath}/**/*`.replace(/\\/g, "/"),
-          dest: "uv",
+          dest: "&",
           overwrite: false
         },
         {
@@ -33,7 +35,7 @@ export default defineConfig({
         },
         {
           src: `${meteorPath}/meteor.*`.replace(/\\/g, "/"),
-          dest: "meteor",
+          dest: "!",
           overwrite: false,
         },
         {
@@ -41,23 +43,28 @@ export default defineConfig({
           dest: "libcurl",
           overwrite: false
         },
+        {
+          src: `${baremuxPath}/**/*`.replace(/\\/g, '/'),
+          dest: 'baremux',
+          overwrite: false
+        } //yes 
+        //we dont need we have server remember
+        //doesnt it already static the library through express
+        //ohhhh okay makes sense
       ]
     }),
-    million.vite({ auto: true }),
+    ,
     react(),
     terser({
       compress: {
-        drop_console: true,
+        
         drop_debugger: true,
       },
       output: {
         comments: false,
       },
     }),
-    {
-      ...postcss(),
-      apply: 'build',
-    },
+    
     
     {
       name: 'add-defer-to-links',
@@ -106,12 +113,18 @@ export default defineConfig({
     cssCodeSplit: true,
     minify: terser,
     rollupOptions: {
+      
       output: {
         entryFileNames: assetInfo => {
           if (assetInfo.name && assetInfo.name.includes('index')) {
             return 'assets/js/index.js';
           }
+          if (assetInfo.name && assetInfo.name.includes('lucide')) {
+            return `assets/icons/lucide${path.extname(assetInfo.name)}`;
+          }
+
           return 'assets/js/[name].[hash].js';
+
         },
         chunkFileNames: 'assets/js/[name].[hash].js',
         assetFileNames: assetInfo => {
@@ -121,6 +134,8 @@ export default defineConfig({
           if (assetInfo.name && assetInfo.name.includes('lucide')) {
             return `assets/icons/lucide${path.extname(assetInfo.name)}`;
           }
+
+          
           return 'assets/[name].[hash][extname]';
         },
       },

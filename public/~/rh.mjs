@@ -1,4 +1,6 @@
-function RammerheadEncode(baseUrl) {
+export function RammerheadEncode(baseUrl) {
+    //its fixed check utils.ts
+    //wait i think i can do something about it
     // Hellhead
     const mod = (n, m) => ((n % m) + m) % m;
     const baseDictionary =
@@ -12,7 +14,7 @@ function RammerheadEncode(baseUrl) {
         }
         return str;
     };
-
+//okay
     class StrShuffler {
         constructor(dictionary = generateDictionary()) {
             this.dictionary = dictionary;

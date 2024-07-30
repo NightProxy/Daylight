@@ -1,6 +1,6 @@
 /* eslint-disable no-non-null-assertion */
 //heyyy!!!
-
+import 'lucide-static/font/lucide.css';
 import { useEffect, Suspense, useState } from "react";
 import Clock from "@/components/component/clock"
 import "../routes/Home.css";
@@ -48,11 +48,34 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import localForage from "localforage"
 import { OverlayScrollbars } from 'overlayscrollbars';
 import { useMediaQuery } from "@/hooks/use-media-query"
+import { searchProxy } from "../lib/utils"
 
 function Home() {
+  
+  useEffect(() => {
+    
+    searchProxy()
+
+  }, [])
+  const searchChangeFr = () => {
+    //uhh so basically, it will just change the tooltip text to say "Travel to website" 
+    //if its a valid url
+    //it will also change the icon from a search to a globe
+    //no like search term or url
+    //like users can search stuff up on google just by putting it in the thing
+    //LOOK IN THE PLACEHOLDER "Search google or t"
+    console.log("changed, input")
+    var input = document.getElementById("uv-address") as HTMLInputElement
+    if (isValidUrl(input)) {
+      document.getElementById("tooltipTextSearch")!.textContent = "Travel to website"
+    }
+    //yes its al
+    
+
+  }
   const isDesktop = useMediaQuery("(min-width: 768px)")
-  
-  
+
+
 
   var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
   const osInstance = OverlayScrollbars(document.body, {
@@ -123,11 +146,11 @@ function Home() {
       document.body.style.backgroundAttachment = 'fixed';
       document.body.style.height = '100%';
       return () => {
-        if (document.getElementById("light") && document.getElementById("dark")){
+        if (document.getElementById("light") && document.getElementById("dark")) {
           modetlink?.removeChild(light);
           modetlink?.removeChild(dark);
         }
-        
+
       };
     } else {
       if (document.getElementById("light") && document.getElementById("dark")) {
@@ -145,7 +168,7 @@ function Home() {
       return false;
     }
   }
-  
+
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -333,15 +356,8 @@ function Home() {
 
     });
 
+
   }, [])
-
-
-
-
-
-
-
-
 
   return (
 
@@ -392,6 +408,8 @@ function Home() {
                 <Input
                   type="search" //here!
                   placeholder="Search..."
+                  id="uv-address"
+                  onChange={searchChangeFr}
                   className="flex-1 border-none bg-transparent text-sm focus:outline-none"
                   style={{ height: "32px", borderTopRightRadius: "999px", borderBottomRightRadius: "999px", transition: "all 0.2s ease" }} />
               </div>
@@ -416,7 +434,7 @@ function Home() {
             <DialogTrigger asChild>
               <Button variant="outline" style={{ right: "10px", position: "fixed", bottom: "10px" }}>Why the lack of time?</Button>
             </DialogTrigger>
-            <DialogContent style={{ zIndex: "100000000", marginTop: "-10px", width: "750px" }} className="sm:max-w-[600px]">
+            <DialogContent style={{ zIndex: "100000000", marginTop: "-10px", width: "750px", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}} className="sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>Why the lack of time?</DialogTitle>
                 <DialogDescription>

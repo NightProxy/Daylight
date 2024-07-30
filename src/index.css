@@ -12,6 +12,22 @@
   -moz-osx-font-smoothing: grayscale;
 
 }
+#appearanceMode[data-state="checked"] {
+  background-color: hsla(var(--primary)); /* Replace with your actual color */
+}
+
+/* Style when data-state is "unchecked" */
+#appearanceMode[data-state="unchecked"] {
+  background-color: hsla(var(--input)); /* Replace with your actual color */
+}
+#clock[data-state="checked"] {
+  background-color: hsla(var(--primary)); /* Replace with your actual color */
+}
+
+/* Style when data-state is "unchecked" */
+#clock[data-state="unchecked"] {
+  background-color: hsla(var(--input)); /* Replace with your actual color */
+}
 
 @font-face {
   font-family: metropolis;

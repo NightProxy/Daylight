@@ -1582,7 +1582,7 @@ function login() {
                                 <CardDescription>Manage general settings here.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <ScrollArea className="h-[150px] w-full rounded-md border p-4">
+                                <ScrollArea style={{height: "150px"}} className="h-[150px] w-full rounded-md border p-4">
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <p className="font-medium">Appearance Mode</p>

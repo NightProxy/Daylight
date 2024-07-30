@@ -41,16 +41,13 @@ function handleTermination(signal) {
             bare.close()
             process.exit(1);
         });
-        
     }
 }
 
 process.on("SIGINT", () => handleTermination("SIGINT"));
 process.on("SIGTERM", () => handleTermination("SIGTERM"));
 
-const root = [
-    "index.html",
-];
+const root = ["index.html"];
 const icons = [
     "assets/icons/lucide.eot",
     "assets/icons/lucide.svg",
@@ -58,22 +55,46 @@ const icons = [
     "assets/icons/lucide.woff",
     "assets/icons/lucide.woff2",
 ];
-const js = [
-    "assets/js/index.js",
-    "assets/js/index.js.map",
-];
-const css = [
-    "assets/css/index.css",
-];
-const fonts = [
-    "fonts/horizon_outlined.otf",
-    "fonts/horizon.otf",
-];
-const img = [
-    "img/favicon_dark.png",
-    "img/favicon_light.png",
-    "img/bg/bgDark.png",
-    "img/bg/bgLight.png"
+const js = ["assets/js/index.js", "assets/js/index.js.map"];
+const css = ["assets/css/index.css"];
+const fonts = ["fonts/horizon_outlined.otf", "fonts/horizon.otf"];
+const img = ["img/favicon_dark.png", "img/favicon_light.png", "img/bg/bgDark.png", "img/bg/bgLight.png"];
+const proxies = [
+    "!/meteor.config.js",
+    "!/sw.js",
+    "&/sw.js",
+    "&/uv.config.js",
+    "&/uv.bundle.js",
+    "&/uv.bundle.js.map",
+    "&/uv.client.js",
+    "&/uv.client.js.map",
+    "&/uv.handler.js",
+    "&/uv.handler.js.map",
+    "&/uv.sw.js",
+    "&/uv.sw.js.map",
+    "~/rh.mjs",
+    "$/scramjet.client.js",
+    "$/scramjet.client.js.map",
+    "$/scramjet.codecs.js",
+    "$/scramjet.codecs.js.map",
+    "$/scramjet.shared.js",
+    "$/scramjet.shared.js.map",
+    "$/scramjet.worker.js",
+    "$/scramjet.worker.js.map",
+    "epoxy/index.js",
+    "epoxy/index.mjs",
+    "epoxy/module.js",
+    "libcurl/index.cjs",
+    "libcurl/index.js",
+    "libcurl/index.mjs",
+    "!/meteor.bundle.js",
+    "!/meteor.bundle.js.map",
+    "!/meteor.client.js",
+    "!/meteor.client.js.map",
+    "!/meteor.codecs.js",
+    "!/meteor.config.js",
+    "!/meteor.worker.js",
+    "!/meteor.worker.js.map"
 ];
 
 function checkFiles(files, baseDir) {
@@ -90,34 +111,26 @@ function checkFiles(files, baseDir) {
     return allFilesExist;
 }
 
-function rebuildAndCheckIntegrity() {
+async function rebuildAndCheckIntegrity() {
     const spinner = ora("Rebuilding Daylight...").start();
     rebuildInProgress = true;
 
-    const buildProcess = new Promise((resolve, reject) => {
-        fs.rm("./dist", { recursive: true, force: true }, (err) => {
-            if (err) return reject(err);
-            exec("npm run build", (error, stdout, stderr) => {
-                if (error) return reject(error);
-                console.log(stdout);
-                if (stderr) console.error(stderr);
-                resolve();
-                rebuildCompleted = true;
+    try {
+        await new Promise((resolve, reject) => {
+            fs.rm("./dist", { recursive: true, force: true }, (err) => {
+                if (err) return reject(err);
+                exec("npm run build", (error, stdout, stderr) => {
+                    if (error) return reject(error);
+                    console.log(stdout);
+                    if (stderr) console.error(stderr);
+                    resolve();
+                    rebuildCompleted = true;
+                });
             });
         });
-    });
 
-    async function spinnerLoop() {
-        while (rebuildInProgress && !rebuildCompleted) {
-            spinner.text = chalk.blue("Rebuilding Daylight...");
-            await new Promise(resolve => setTimeout(resolve, 100));
-        }
         spinner.succeed("Rebuild and verification complete.");
-        startServer();
-    }
 
-    spinnerLoop();
-    buildProcess.then(() => {
         let allFilesExist = true;
 
         allFilesExist = checkFiles(root, "./dist") && allFilesExist;
@@ -126,15 +139,17 @@ function rebuildAndCheckIntegrity() {
         allFilesExist = checkFiles(css, "./dist") && allFilesExist;
         allFilesExist = checkFiles(fonts, "./dist") && allFilesExist;
         allFilesExist = checkFiles(img, "./dist") && allFilesExist;
+        allFilesExist = checkFiles(proxies, "./dist") && allFilesExist;
 
         if (allFilesExist) {
             console.log(chalk.green("Integrity check completed."));
             updateCompleted = true;
+            startServer();
         } else {
             console.error(chalk.red("Integrity check failed after rebuilding."));
             console.error(chalk.red("This may be an issue with Daylight."));
 
-            select({
+            const answer = await select({
                 message: 'Do you wish for Daylight to rebuild?',
                 choices: [
                     {
@@ -154,26 +169,46 @@ function rebuildAndCheckIntegrity() {
                         description: "This will fetch the most latest version of Daylight from the GitHub repository."
                     },
                 ],
-            }).then(async (answer) => {
-                if (answer === 'y') {
-                    rebuildAndCheckIntegrity();
-                } else if (answer === 'n') {
-                    console.log(chalk.red("Script terminated by user choice."));
-                    exit();
-                } else if (answer === 'u') {
-                    console.log(chalk.yellow("Updating Daylight..."));
-                    updateInProgress = true;
-                    updateCompleted = false;
-                }
-            }).catch(error => {
-                console.error(chalk.red("Error handling prompt:"), error);
             });
+
+            if (answer === 'y') {
+                await rebuildAndCheckIntegrity();
+            } else if (answer === 'n') {
+                console.log(chalk.red("Script terminated by user choice."));
+                exit();
+            } else if (answer === 'u') {
+                console.log(chalk.yellow("Updating Daylight..."));
+                updateInProgress = true;
+                updateCompleted = false;
+                await updateDaylight();
+            }
         }
-    }).catch(error => {
+    } catch (error) {
         spinner.fail("Rebuilding Daylight failed.");
         console.error(chalk.red("Error during rebuild:"), error);
         rebuildInProgress = false;
-    });
+    }
+}
+
+async function updateDaylight() {
+    const spinner = ora("Updating Daylight...").start();
+    try {
+        await new Promise((resolve, reject) => {
+            exec("git pull", (error, stdout, stderr) => {
+                if (error) return reject(error);
+                console.log(stdout);
+                if (stderr) console.error(stderr);
+                resolve();
+            });
+        });
+        spinner.succeed("Update completed.");
+        await rebuildAndCheckIntegrity();
+    } catch (error) {
+        spinner.fail("Updating Daylight failed.");
+        console.error(chalk.red("Error during update:"), error);
+    } finally {
+        updateInProgress = false;
+    }
 }
 
 if (fs.existsSync("./dist")) {
@@ -187,7 +222,9 @@ if (fs.existsSync("./dist")) {
         !checkFiles(js, distDir) ||
         !checkFiles(css, distDir) ||
         !checkFiles(fonts, distDir) ||
-        !checkFiles(img, distDir)) {
+        !checkFiles(img, distDir) ||
+        !checkFiles(proxies, distDir)
+    ) {
         console.log(chalk.red("File integrity check failed."), chalk.yellow(" Rebuilding Daylight..."));
         rebuildAndCheckIntegrity();
     } else {
@@ -243,7 +280,7 @@ function startServer() {
     app.use(express.static(path.join(__dirname, "dist")));
     app.use(cors());
 
-    app.use("/@/", express.static(uvPath));
+    app.use("/&/", express.static(uvPath));
     console.log(chalk.red("Serving Ultraviolet's files.."));
     app.use("/epoxy/", express.static(epoxyPath));
     console.log(chalk.yellow("Serving Epoxy's files.."));

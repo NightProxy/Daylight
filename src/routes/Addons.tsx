@@ -351,16 +351,16 @@ function handleClassAttributeChanges(
           <Link style={{ left: "0", top: "0" }} className={"opacity-0"} id="redirectSettings" to="/settings"></Link>
                 </div>
                 <Navbar addons="true" />
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Womp Womp..</CardTitle>
-                        <CardDescription>  This feature is not yet available due to lack of time. </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                     
-                       This feature is not yet available. It already has some progress but is not in a state for presentation. This will release soon.
-                    </CardContent>
-                </Card>
+                <Card style={{width: "400px"}} className="text-left">
+          <CardHeader>
+            <CardTitle>Womp Womp..</CardTitle>
+            <CardDescription>  This feature is not yet available due to lack of time. </CardDescription>
+          </CardHeader>
+          <CardContent>
+
+            This feature is not yet available. It already has some progress but is not in a state for presentation. This will release soon.
+          </CardContent>
+        </Card>
                 
                 {isDesktop && localStorage.getItem("clockEnabled") && (
       <div className="wrapper">
