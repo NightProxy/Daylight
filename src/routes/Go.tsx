@@ -54,21 +54,24 @@ function Go() {
 
 
 
-
+  //this is prob the page that uses the most less components from Radix
   return (
 
 
     <>
+    
       <Suspense fallback={<div className="text-center justify-center items-center flex">Loading <h1>Loading <p className='horizon-outline'>Daylight</p> Systems Incorporated...</h1></div>}>
         <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           
-         <iframe src="" id="landing">
+          <div className="topbar">
+
+          </div>
+          <div className="parent">
+          <iframe src="https://angrytree0.github.io" id="main">
           </iframe>
-          /*
+          </div>
+          
         
-          */
-          <iframe src="" id="main">
-        </iframe>
 
         </ThemeProvider>
         <motion.div
