@@ -390,7 +390,7 @@ function Home() {
                   <Separator orientation="vertical" style={{ height: "40px" }} />
                 </div>
                 <Input
-                  type="search"
+                  type="search" //here!
                   placeholder="Search..."
                   className="flex-1 border-none bg-transparent text-sm focus:outline-none"
                   style={{ height: "32px", borderTopRightRadius: "999px", borderBottomRightRadius: "999px", transition: "all 0.2s ease" }} />

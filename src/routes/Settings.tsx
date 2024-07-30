@@ -1,5 +1,5 @@
 /* eslint-disable no-non-null-assertion */
-
+//seems good, uh somewhat, t
 import { useRef, useState, useEffect } from "react";
 import "./Settings.css";
 import { Button } from "@/components/ui/button";
@@ -98,7 +98,8 @@ function login() {
                 if (!document.documentElement.classList.contains("light")) {
                     light.classList.add("opacity-0")
                     dark.classList.remove("opacity-0")
-                }
+                } 
+
 
 
                 if (!document.documentElement.classList.contains("dark")) {

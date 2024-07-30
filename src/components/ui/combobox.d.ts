@@ -1,9 +1,17 @@
 import * as React from "react";
-export declare function Combobox({ list, placeHolderPlural, placeHolder, defaultValue, triggerID, onValueChange }: {
-    list: any;
-    placeHolderPlural: any;
-    placeHolder: any;
-    defaultValue: any;
-    triggerID?: string | undefined;
-    onValueChange: any;
-}): React.JSX.Element;
+interface ComboboxProps {
+    list: {
+        value: string;
+        label: string;
+    }[];
+    placeHolderPlural: string;
+    placeHolder: string;
+    defaultValue: string | null;
+    triggerID?: string;
+    onValueChange?: (value: string) => void;
+}
+export interface ComboboxRef {
+    setValue: (value: string) => void;
+}
+export declare const Combobox: React.ForwardRefExoticComponent<ComboboxProps & React.RefAttributes<ComboboxRef>>;
+export {};

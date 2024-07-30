@@ -1,10 +1,19 @@
 import * as React from "react";
 import { AnimatePresence, motion, useIsPresent } from "framer-motion";
 import { useLocation, useRoutes } from "react-router-dom";
-
+//hello there!
+//this handles routing..
+//do you have any questions
+//ahh we import them into the routes, any imported files in the pages will automatically
+//be injected. we don't import them here.
+//which page do u want to have a script to be injected
+//or, we can juts code directly in the page!! 
+//elaborate
+//for those, we code directly in the route. look, follow me
 import Settings from "./routes/Settings";
 import Home from "./routes/Home"
 import Favorites from "./routes/Favorites"
+import Go from "./routes/Go"
 import Addons from "./routes/Addons"
 import ErrorBoundary from "./routes/ErrorBoundary";
 export default function App() {
@@ -27,6 +36,10 @@ export default function App() {
     {
       path: "/addons",
       element: <Addons />
+    },
+    {
+      path: "/go",
+      element: <Go />
     }
   ]);
 
