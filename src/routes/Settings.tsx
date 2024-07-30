@@ -1048,17 +1048,20 @@ function login() {
 
 
             } else {
-                if (document.getElementById("appearanceMode")?.getAttribute("aria-checked") === "true"){
-                    console.log("skibidi mandai")
-                } else {
+                setTimeout(function(){
+                    if (document.getElementById("appearanceMode")?.getAttribute("aria-checked") === "true"){
+                        console.log("e")
+                    } else {
+                        localStorage.removeItem("appearanceMode")
                     localStorage.removeItem("appearanceMode")
-                localStorage.removeItem("appearanceMode")
-                const bgs = document.getElementById("bgs")
-                console.log("skibidi toilet")
-                $("#dark").remove()
-                $("#light").remove()
-                document.body.removeAttribute("style")
-                }
+                    const bgs = document.getElementById("bgs")
+                    
+                    $("#dark").remove()
+                    $("#light").remove()
+                    document.body.removeAttribute("style")
+                    }
+                },  200)
+                
                 
             }
 
