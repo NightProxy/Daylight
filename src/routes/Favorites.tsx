@@ -31,7 +31,7 @@ import localForage from "localforage"
 function login() {
   const isDesktop = false
   const { theme } = useTheme();
-    const icon = document.getElementById("favicon")
+  const icon = document.getElementById("favicon")
   var themeee = document.documentElement.classList.contains("dark") ? "dark" : "light";
   const osInstance = OverlayScrollbars(document.body, {
     scrollbars: {
@@ -83,7 +83,7 @@ function login() {
         zIndex: 0,
         opacity: '0',
       });
-      
+
       const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
       document.body.appendChild(lightDiv);
       document.body.appendChild(darkDiv);
@@ -100,51 +100,68 @@ function login() {
     }
   }, [isDesktop]);
   async function setInitialColor() {
-    const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+    if (isDesktop) {
+        const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
 
 
-    const box = document.getElementById("searchBox")
-    var themeEl = document.getElementById(themeClass as string)
-    if (themeClass == "dark") {
-      var themeOpp = document.getElementById("light")
-      osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+        const box = document.getElementById("searchBox")
+        var themeEl = document.getElementById(themeClass as string)
+        if (themeClass == "dark") {
+            var themeOpp = document.getElementById("light")
+            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+        } else {
+            var themeOpp = document.getElementById("dark")
+            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+        }
+        if (themeEl?.classList.contains("opacity-0")) {
+            themeOpp?.classList.add("opacity-0")
+            themeEl.classList.remove("opacity-0")
+        }
+
+
+
+        Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
+            element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
+            element.style.backgroundPosition = 'center center';
+            element.style.backgroundSize = 'cover';
+            element.style.backgroundRepeat = 'no-repeat';
+            element.style.backgroundAttachment = 'fixed';
+            element.style.height = '100%';
+        });
+
+        if (localStorage.getItem("customCloak")) {
+            if (localStorage.getItem('customCloak') == "active") {
+                document.title = await localForage.getItem("customCloakTitle") as string
+                var favIcon = document.getElementById('favicon') as HTMLLinkElement
+                favIcon.href = await localForage.getItem("customCloakImg") as string
+            }
+        }
+        if (!localStorage.getItem("cloak")) {
+            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+        }
     } else {
-      var themeOpp = document.getElementById("dark")
-      osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
-    }
-    if (themeEl?.classList.contains("opacity-0")) {
-      themeOpp?.classList.add("opacity-0")
-      themeEl.classList.remove("opacity-0")
-    }
+        const themeClass = document.documentElement.classList.contains("dark") ? "dark" : "light";
+        if (themeClass == "dark") {
 
+            osInstance.options({ scrollbars: { theme: `os-theme-light` } });
+        } else {
 
-
-    Array.from(document.getElementsByClassName('bgImage') as HTMLCollectionOf<HTMLElement>).forEach(element => {
-      element.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-      element.style.backgroundPosition = 'center center';
-      element.style.backgroundSize = 'cover';
-      element.style.backgroundRepeat = 'no-repeat';
-      element.style.backgroundAttachment = 'fixed';
-      element.style.height = '100%';
-    });
-    document.body.style.backgroundImage = `url(/img/bg/bg${themeClass.charAt(0).toUpperCase() + themeClass.slice(1)}.png)`;
-    document.body.style.backgroundPosition = 'center center';
-    document.body.style.backgroundSize = 'cover';
-    document.body.style.backgroundRepeat = 'no-repeat';
-    document.body.style.backgroundAttachment = 'fixed';
-    document.body.style.height = '100%';
-    if (localStorage.getItem("customCloak")) {
-      if (localStorage.getItem('customCloak') == "active") {
-        document.title = await localForage.getItem("customCloakTitle") as string
-        var favIcon = document.getElementById('favicon') as HTMLLinkElement
-        favIcon.href = await localForage.getItem("customCloakImg") as string
-      }
-    }
-    if (!localStorage.getItem("cloak")) {
-      icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+            osInstance.options({ scrollbars: { theme: `os-theme-dark` } });
+        }
+        if (localStorage.getItem("customCloak")) {
+            if (localStorage.getItem('customCloak') == "active") {
+                document.title = await localForage.getItem("customCloakTitle") as string
+                var favIcon = document.getElementById('favicon') as HTMLLinkElement
+                favIcon.href = await localForage.getItem("customCloakImg") as string
+            }
+        }
+        if (!localStorage.getItem("cloak")) {
+            icon?.setAttribute("href", `/img/favicon_${themeClass}.png`)
+        }
     }
 
-  }
+
+}
   useEffect(() => {
 
 
@@ -313,46 +330,49 @@ function login() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Welcome back</CardTitle>
-            <CardDescription>Login with your username and password to access.</CardDescription>
+            <CardTitle>Womp Womp..</CardTitle>
+            <CardDescription>  This feature is not yet available due to lack of time. </CardDescription>
           </CardHeader>
           <CardContent>
-            THIS IS THE FAVORITES PAGE!!!!!
+
+            This feature is not yet available. It already has some progress but is not in a state for presentation. This will release soon.
           </CardContent>
         </Card>
 
-        <div className="wrapper">
-          <div className="clock-container">
-            <div className="clock">
-              <div className="clock-circles">
-                <div className="clock-circles__item"></div>
-                <div className="clock-circles__item"></div>
-                <div className="clock-circles__item"></div>
-                <div className="clock-circles__item"></div>
-              </div>
-              <div className="clock-indicators">
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-                <div className="clock-indicators__item"></div>
-              </div>
-              <div className="clock-times">
-                <div className="clock-times__second"></div>
-                <div className="clock-times__minute"></div>
-                <div className="clock-times__hour"></div>
-              </div>
+        {isDesktop && (
+      <div className="wrapper">
+        <div className="clock-container">
+          <div className="clock">
+            <div className="clock-circles">
+              <div className="clock-circles__item"></div>
+              <div className="clock-circles__item"></div>
+              <div className="clock-circles__item"></div>
+              <div className="clock-circles__item"></div>
+            </div>
+            <div className="clock-indicators">
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+              <div className="clock-indicators__item"></div>
+            </div>
+            <div className="clock-times">
+              <div className="clock-times__second"></div>
+              <div className="clock-times__minute"></div>
+              <div className="clock-times__hour"></div>
             </div>
           </div>
         </div>
+      </div>
+    )}
         <motion.div
           key="privacy-screen"
           initial={{ scaleX: 1 }}

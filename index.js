@@ -35,7 +35,13 @@ function handleTermination(signal) {
         console.log(chalk.red(`Cannot terminate now. Daylight is currently updating. Termination of the script now will brick Daylight. The only way to fix a "bricking" of Daylight, is to completely download it again, and make a new instance.`));
     } else {
         console.log(chalk.blue(`Received ${signal}. Exiting now.`));
-        process.exit();
+        server.close(() => {
+            console.log("HTTP server closed");
+            server.close()
+            bare.close()
+            process.exit(1);
+        });
+        
     }
 }
 
@@ -283,13 +289,10 @@ function startServer() {
     //i think we just ru
     server.on("listening", () => {
         const address = server.address();
-        //okayyyyyyyy!!!!
-        //no its fucked
+        
         
         const theme = chalk.hex("#FFECA1");
-        //okay !!
-        //yes that is what im going to do
-        //in the nexct update im lazy
+       
         const host = chalk.hex("#060270");
         console.log(chalk.bold(theme(`
         ██████╗  █████╗ ██╗   ██╗██╗     ██╗ ██████╗ ██╗  ██╗████████╗
@@ -326,19 +329,9 @@ function startServer() {
     
     server.listen({ port: PORT });
     
-    process.on("SIGINT", shutdown);
-    process.on("SIGTERM", shutdown);
     
     server.setMaxListeners(0);
     
-    function shutdown() {
-        console.log("SIGTERM signal received: closing HTTP server");
-        server.close(() => {
-            console.log("HTTP server closed");
-            server.close()
-            bare.close()
-            process.exit(1);
-        });
-    }
+   
 
 }

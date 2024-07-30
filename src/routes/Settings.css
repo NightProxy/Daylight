@@ -10,7 +10,7 @@
 
   #themeCard1024 {
     display: block;
-    height: 400px;
+    height: 100%
   }
 
   #generalCard {
@@ -20,12 +20,10 @@
 
   }
 
-  #cloakCard {
-    height: 400px;
-  }
+  
 
   #searchCard {
-    height: 400px;
+    height: 100%;
   }
 
 
