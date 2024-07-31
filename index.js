@@ -298,6 +298,21 @@ function startServer() {
     app.get("/", (req, res) => {
         res.sendFile(path.join(__dirname, "dist/index.html"));
     });
+    app.get("/go", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"))
+    });
+    app.get("/settings", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"))
+    })
+    app.get("/addons", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"))
+    })
+    app.get("/favorites", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"))
+    })
+    app.get("/landing", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist/index.html"))
+    })
 
     server.on("request", (req, res) => {
         if (bare.shouldRoute(req)) {

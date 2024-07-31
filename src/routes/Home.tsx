@@ -1,5 +1,6 @@
 /* eslint-disable no-non-null-assertion */
 //heyyy!!!
+
 import 'lucide-static/font/lucide.css';
 import { useEffect, Suspense, useState } from "react";
 import Clock from "@/components/component/clock"
@@ -48,7 +49,7 @@ import 'overlayscrollbars/overlayscrollbars.css';
 import localForage from "localforage"
 import { OverlayScrollbars } from 'overlayscrollbars';
 import { useMediaQuery } from "@/hooks/use-media-query"
-import { searchProxy } from "../lib/utils"
+import { searchProxy, setTransports } from "../lib/utils"
 
 function Home() {
   
@@ -57,6 +58,7 @@ function Home() {
     searchProxy()
 
   }, [])
+
   const searchChangeFr = () => {
     //uhh so basically, it will just change the tooltip text to say "Travel to website" 
     //if its a valid url
@@ -65,6 +67,7 @@ function Home() {
     //like users can search stuff up on google just by putting it in the thing
     //LOOK IN THE PLACEHOLDER "Search google or t"
     console.log("changed, input")
+
     var input = document.getElementById("uv-address") as HTMLInputElement
     if (isValidUrl(input)) {
       document.getElementById("tooltipTextSearch")!.textContent = "Travel to website"

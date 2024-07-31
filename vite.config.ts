@@ -77,7 +77,17 @@ export default defineConfig({
               return `<link ${attributes} defer>`;
             }
             return match;
-          }
+          },
+     
+        );
+      },
+    } as unknown as Plugin,
+    {
+      name: 'add-custom-link',
+      transformIndexHtml(html: string) {
+        return html.replace(
+          /<\/head>/,
+          '<link href="/tailwindBuilt.css" rel="stylesheet"/>\n</head>'
         );
       },
     } as unknown as Plugin,

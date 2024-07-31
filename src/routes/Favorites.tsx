@@ -353,7 +353,7 @@ function login() {
         </div>
         <Navbar favorites="true"></Navbar>
 
-        <Card className="text-left w-[400px]">
+        <Card style={{width: "400px"}} className="text-left ">
           <CardHeader>
             <CardTitle>Womp Womp..</CardTitle>
             <CardDescription>  This feature is not yet available due to lack of time. </CardDescription>

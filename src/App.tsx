@@ -16,6 +16,7 @@ import Favorites from "./routes/Favorites"
 import Go from "./routes/Go"
 import Addons from "./routes/Addons"
 import ErrorBoundary from "./routes/ErrorBoundary";
+import Landing from "./routes/Landing"
 export default function App() {
   const location = useLocation();
   const isPresent = useIsPresent();
@@ -40,6 +41,10 @@ export default function App() {
     {
       path: "/go",
       element: <Go />
+    },
+    {
+      path: "/landing",
+      element: <Landing documentClassList={localStorage.getItem("documentClassList")}/>
     }
   ]);
 

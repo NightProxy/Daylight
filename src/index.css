@@ -170,7 +170,40 @@
   font-weight: 900;
   src: local('Metropolis'), url(https://fonts.cdnfonts.com/s/16308/Metropolis-Black.woff) format('woff')
 }
+.switchThumb{
+  transition: transform cubic-bezier(0.4, 0, 0.2, 1);
+  
+}
+.switchThumb[data-state="checked"] {
+  transform: translateX(20px); /* Adjust the value according to your needs */
+}
+.dialogOverlay[data-state="open"]{
+  --tw-enter-opacity: 0;
+}
 
+.dialogOverlay[data-state="open"] {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: initial;
+  --tw-enter-scale: initial;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: initial;
+  --tw-enter-translate-y: initial;
+}
+.dialogContent[data-state="open"] {
+  animation-name: enter;
+  animation-duration: 150ms;
+  --tw-enter-opacity: 0;
+  --tw-enter-scale: .95;
+  --tw-enter-rotate: initial;
+  --tw-enter-translate-x: -50%;
+  --tw-enter-translate-y: -48%;
+}
+
+/* Style when data-state is "unchecked" */
+.switchThumb[data-state="unchecked"] {
+  transform: translateX(0);
+}
 @font-face {
   font-family: metropolis;
   font-display: swap;
