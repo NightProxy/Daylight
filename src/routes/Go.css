@@ -1,0 +1,53 @@
+#main {
+    background: white;
+    position: absolute;
+    inset: 0px;
+    border: none;
+    height: 100%;
+    width: 100%;
+    display: block;
+}
+.topbar{
+    top:0;
+    left:50%;
+    transform: translate(-50%);
+    width: 100%;
+    background: red;
+    
+}
+.parent {
+    flex: 1 1 0%;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 2px 4px 0px, rgba(0, 0, 0, 0.6) 0px 1px 1px 0px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.024);
+    position: relative;
+    z-index: 2;
+    height: 97vh;
+    width: 97vw;
+    overflow: hidden;
+}
+.sidebar{
+    width: 17vw;
+    position: absolute;
+    left: 0.5vw;
+    background: hsla(var(--card));
+    border-width: 1px;
+    height: 98vh;
+    margin-top: -1vh;
+    z-index: 999;
+    border-radius: 8px;
+}
+.mobileBar{
+    height: 17vh;
+    position: absolute;
+    right: 0.5vh;
+    background: hsla(var(--card));
+    border-width: 1px;
+    width: 98vw;
+    margin-bottom: -1vw;
+    z-index: 999;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 8px;
+}

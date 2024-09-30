@@ -1,0 +1,110 @@
+@media only screen and (min-width : 1024px) {
+  /* This means that the styles will automatically resize so that there are 3 cards on one (this is the default for most laptops) */
+  /* Sometimes, the screen is small enough to display 2 cards on one column, in that case there is no media query as anything below the width (1024px) will automatically apply the default styles */
+  /* its a bunch of yap i know */
+
+  .theme {
+    display: none;
+
+  }
+
+  #themeCard1024 {
+    display: block;
+    height: 100%
+  }
+
+  #generalCard {
+    height: 300px;
+    margin-top: auto;
+    width: 310%;
+
+  }
+
+  
+
+  #searchCard {
+    height: 100%;
+  }
+
+
+
+
+}
+
+@media only screen and (max-width : 1023px) {
+  #themeCard1024 {
+    display: none;
+    height: 400px;
+  }
+}
+
+#uploadIcon {
+  position: relative;
+  top: -96px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  width: 110px;
+  transition: width 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+}
+
+#uploadIcon:hover {
+  position: relative;
+  top: -96px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  width: 133.09px;
+  transition: width 0.3s ease, opacity 0.2s ease, top 0.3s ease;
+}
+
+#cloakTitle {
+  transition: all 0.2s ease;
+}
+
+#cloakDescription {
+  transition: all 0.2s ease;
+}
+
+#saveCloak {
+  position: relative;
+  top: -96px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 60px;
+  transition: opacity 0.2s ease, width 0.3s ease, top 0.3s ease;
+}
+
+#saveCloak:hover {
+  position: relative;
+  top: -96px;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  width: 84.67px;
+  transition: opacity 0.2s ease, width 0.3s ease, top 0.3s ease;
+}
+#iconPreview{
+  transition: opacity 0.4s ease, border-radius 0.6s ease;
+}
+#customCloakTitleInput {
+  transition: all 0.2s ease;
+}
+
+.collapsed {
+  height: 0;
+  margin-top: 0;
+}
+
+#searchCard {
+  transition: all 0.2s ease-out
+}
+
+#cloakCard {
+  transition: all 0.2s ease-out
+}
+
+#themeCard {
+  transition: all 0.2s ease-out
+}
+
+#generalCard {
+  transition: all 0.2s ease-out
+}
