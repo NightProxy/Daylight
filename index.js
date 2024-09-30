@@ -194,7 +194,7 @@ async function updateDaylight() {
     const spinner = ora("Updating Daylight...").start();
     try {
         await new Promise((resolve, reject) => {
-            exec("git pull", (error, stdout, stderr) => {
+            exec("git pull --force --allow-unrelated-histories", (error, stdout, stderr) => {
                 if (error) return reject(error);
                 console.log(stdout);
                 if (stderr) console.error(stderr);
@@ -323,7 +323,7 @@ function startServer() {
             app(req, res);
         }
     });
-    
+
     server.on("upgrade", (req, socket, head) => {
         if (bare.shouldRoute(req)) {
             bare.routeUpgrade(req, socket, head)
@@ -332,17 +332,17 @@ function startServer() {
         } else if (req.url.endsWith("/wisp")) {
             wisp.routeRequest(
                 req, socket, head);
-            
+
         } else {
             socket.destroy();
         }
     });
     server.on("listening", () => {
         const address = server.address();
-        
-        
+
+
         const theme = chalk.hex("#FFECA1");
-       
+
         const host = chalk.hex("#060270");
         console.log(chalk.bold(theme(`
         ██████╗  █████╗ ██╗   ██╗██╗     ██╗ ██████╗ ██╗  ██╗████████╗
@@ -354,34 +354,34 @@ function startServer() {
                                                                       
         `)));
         console.log(`  ${chalk.bold(host("Local System:"))}            http://${address.family === "IPv6" ? `[${address.address}]` : address.address}${address.port === 80 ? "" : ":" + chalk.bold(address.port)}`);
-    
+
         console.log(`  ${chalk.bold(host("Local System:"))}            http://localhost${address.port === 8080 ? "" : ":" + chalk.bold(address.port)}`);
-    
+
         try {
             console.log(`  ${chalk.bold(host("On Your Network:"))}  http://${hostname()}${address.port === 8080 ? "" : ":" + chalk.bold(address.port)}`);
         } catch (err) {
             // can't find LAN interface
         }
-    
+
         if (process.env.REPL_SLUG && process.env.REPL_OWNER) {
             console.log(`  ${chalk.bold(host("Replit:"))}           https://${process.env.REPL_SLUG}.${process.env.REPL_OWNER}.repl.co`);
         }
-    
+
         if (process.env.HOSTNAME && process.env.GITPOD_WORKSPACE_CLUSTER_HOST) {
             console.log(`  ${chalk.bold(host("Gitpod:"))}           https://${PORT}-${process.env.HOSTNAME}.${process.env.GITPOD_WORKSPACE_CLUSTER_HOST}`);
         }
-    
+
         if (process.env.CODESPACE_NAME && process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN) {
             console.log(`  ${chalk.bold(host("Github Codespaces:"))}           https://${process.env.CODESPACE_NAME}-${address.port === 80 ? "" : address.port}.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN}`);
         }
-        
+
     });
-    
+
     server.listen({ port: PORT });
-    
-    
+
+
     server.setMaxListeners(0);
-    
-   
+
+
 
 }
