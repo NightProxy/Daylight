@@ -91,7 +91,6 @@ const proxies = [
     "$/scramjet.worker.js.map",
     "epoxy/index.js",
     "epoxy/index.mjs",
-    "epoxy/module.js",
     "libcurl/index.cjs",
     "libcurl/index.js",
     "libcurl/index.mjs"
