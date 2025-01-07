@@ -15,7 +15,7 @@ This is a Proxathon 2024 entry.
 - React
 
 ## Official Instance
-The official instance (demo) is available [here[(https://daylight-prod.vercel.app). (do not believe whatever link is in the description, that is outdated.)
+The official instance (demo) is available [here](https://daylight-prod.vercel.app). (do not believe whatever link is in the description, that is outdated.)
 
 ## Deployment
 
