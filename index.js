@@ -18,7 +18,7 @@ import { baremuxPath } from "@mercuryworkshop/bare-mux/node";
 import { meteorPath } from "meteorproxy"
 import wisp from "wisp-server-node";
 import { createBareServer } from "@tomphttp/bare-server-node"
-//wahts the library i forgot
+import RateLimit from "express-rate-limit";
 import net from "node:net"
 import { hostname } from "node:os"
 const __filename = fileURLToPath(import.meta.url);
@@ -293,6 +293,15 @@ function startServer() {
     console.log(chalk.blue("Serving Meteor's files.."));
     console.log(chalk.green("Serving", chalk.yellow("Daylight's"), chalk.green("files")));
     console.log(chalk.green("All necessary files served. Setting up server."))
+
+    // set up rate limiter: maximum of 100 requests per 15 minutes
+    const limiter = RateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // max 100 requests per windowMs
+    });
+
+    // apply rate limiter to all requests
+    app.use(limiter);
 
     app.get("/", (req, res) => {
         res.sendFile(path.join(__dirname, "dist/index.html"));
